@@ -18,15 +18,15 @@ const VehiculoForm = () => {
   });
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/marcas')
+    axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/marcas')
       .then(res => setMarcas(res.data))
       .catch(err => console.error('Error cargando marcas:', err));
 
-    axios.get('http://localhost:3000/api/modelos')
+    axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/modelos')
       .then(res => setModelos(res.data))
       .catch(err => console.error('Error cargando modelos:', err));
 
-    axios.get('http://localhost:3000/api/tiposvehiculo')
+    axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/tiposvehiculo')
       .then(res => setTipos(res.data))
       .catch(err => console.error('Error cargando tipos:', err));
   }, []);
@@ -41,7 +41,7 @@ const VehiculoForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/api/vehiculos', formulario);
+      await axios.post('https://gestion-combustible-frontend-production.up.railway.app/api/vehiculos', formulario);
       setMensaje('✅ Vehículo registrado correctamente');
       setFormulario({
         denominacion: '',

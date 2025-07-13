@@ -10,7 +10,7 @@ const HistorialAbastecimientos = () => {
 
   const consultarHistorial = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/api/abastecimientos-rango', {
+      const res = await axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/abastecimientos-rango', {
         params: {
           desde: fechaInicio,
           hasta: fechaFin

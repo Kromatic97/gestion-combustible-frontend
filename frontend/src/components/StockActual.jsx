@@ -6,7 +6,7 @@ const StockActual = forwardRef((props, ref) => {
 
   const cargarStock = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/api/stock');
+      const res = await axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/stock');
       setLitros(res.data.litroactual);
     } catch (error) {
       console.error('Error al obtener stock actual:', error);

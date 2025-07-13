@@ -10,7 +10,7 @@ function ChoferForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/api/choferes', { nombre });
+      await axios.post('https://gestion-combustible-frontend-production.up.railway.app/api/choferes', { nombre });
       setMensaje('✅ Chofer registrado correctamente');
       setNombre('');
 

@@ -7,7 +7,7 @@ const HistorialRecargas = () => {
   useEffect(() => {
     const fetchHistorial = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/historial-stock');
+        const response = await axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/historial-stock');
         setData(response.data);
       } catch (error) {
         console.error('Error al cargar historial:', error);

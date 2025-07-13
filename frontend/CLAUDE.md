@@ -27,7 +27,7 @@ I cannot directly answer questions about an image. Please provide the question i
 
 const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3000/api/abastecimientos', formulario)
+    axios.post('https://gestion-combustible-frontend-production.up.railway.app/api/abastecimientos', formulario)
       .then(res => {
         setMensaje('Abastecimiento registrado correctamente');
         setFormulario({
@@ -55,7 +55,7 @@ const handleSubmit = (e) => {
 
 ## High-Level Overview: Frontend Combustible Application
 
-The **Frontend Combustible** application is a React-based single-page application designed to manage fuel supply records. It interacts with a backend API (presumably running on `http://localhost:3000`) to perform CRUD operations related to vehicles, drivers, locations, and fuel supply records. The application's structure is component-based, with each component handling a specific part of the UI and its associated logic.
+The **Frontend Combustible** application is a React-based single-page application designed to manage fuel supply records. It interacts with a backend API (presumably running on `https://gestion-combustible-frontend-production.up.railway.app/`) to perform CRUD operations related to vehicles, drivers, locations, and fuel supply records. The application's structure is component-based, with each component handling a specific part of the UI and its associated logic.
 
 ## Mid-Level Overview: AbastecimientoForm Component
 
@@ -68,7 +68,7 @@ The **AbastecimientoForm** component [AbastecimientoForm.jsx](src/components/Aba
     *   **Event Handlers:** Contains functions like `handleChange` for updating form fields and `handleSubmit` for submitting the form.
     *   **API Interactions:** Utilizes the `axios` library to make HTTP requests to the backend API for fetching and posting data.
 *   **External Relationships:**
-    *   **Backend API:** Communicates with the backend API at `http://localhost:3000` to fetch lists of vehicles, drivers, and locations, and to post new fuel supply records.
+    *   **Backend API:** Communicates with the backend API at `https://gestion-combustible-frontend-production.up.railway.app/` to fetch lists of vehicles, drivers, and locations, and to post new fuel supply records.
     *   **Parent Component:** Exposes functions (`cargarVehiculos`, `cargarChoferes`) to its parent component (likely [App.jsx](src/App.jsx)) via `useImperativeHandle` and triggers `onAbastecimientoRegistrado` callback upon successful registration.
 
 ## Low-Level Analysis: `handleSubmit` Function
@@ -79,7 +79,7 @@ The `handleSubmit` function [AbastecimientoForm.jsx:60](src/components/Abastecim
 *   **Inputs:** It receives a synthetic event object `e` from the form submission.
 *   **Functionality:**
     1.  **Prevents Default Behavior:** `e.preventDefault()` [AbastecimientoForm.jsx:61](src/components/AbastecimientoForm.jsx:61) stops the browser's default form submission behavior, which would typically cause a page reload.
-    2.  **API Call:** It makes an HTTP POST request using `axios.post` [AbastecimientoForm.jsx:62](src/components/AbastecimientoForm.jsx:62) to the endpoint `http://localhost:3000/api/abastecimientos`. The `formulario` state object, containing all the form data, is sent as the request body.
+    2.  **API Call:** It makes an HTTP POST request using `axios.post` [AbastecimientoForm.jsx:62](src/components/AbastecimientoForm.jsx:62) to the endpoint `https://gestion-combustible-frontend-production.up.railway.app/api/abastecimientos`. The `formulario` state object, containing all the form data, is sent as the request body.
     3.  **Success Handling (`.then` block):**
         *   Upon a successful response from the API, it sets a success message: `setMensaje('Abastecimiento registrado correctamente')` [AbastecimientoForm.jsx:64](src/components/AbastecimientoForm.jsx:64).
         *   It then resets the `formulario` state to clear all input fields, preparing the form for a new entry [AbastecimientoForm.jsx:65](src/components/AbastecimientoForm.jsx:65).
