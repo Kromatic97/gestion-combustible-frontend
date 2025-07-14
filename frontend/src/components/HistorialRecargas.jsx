@@ -42,13 +42,15 @@ const HistorialRecargas = () => {
           </thead>
           <tbody>
             {data.map((item, index) => {
-              const entradaRaw = item.litrosentrada;
-              const salidaRaw = item.litrossalida;
+              const entradaRaw = item.litrosentrada || '0';
+              const salidaRaw = item.litrossalida || '0';
 
-              const entradaNumerica = parseFloat(entradaRaw?.replace('.', '').replace(',', '.') || 0);
-              const salidaNumerica = parseFloat(salidaRaw?.replace('.', '').replace(',', '.') || 0);
+              // 👇 Convertir "10.000,00" a 10000.00 (float)
+              const entrada = parseFloat(entradaRaw.replace(/\./g, '').replace(',', '.')) || 0;
+              const salida = parseFloat(salidaRaw.replace(/\./g, '').replace(',', '.')) || 0;
 
-              stockAcumulado += entradaNumerica - salidaNumerica;
+              // 👇 Acumulado correctamente
+              stockAcumulado += entrada - salida;
 
               return (
                 <tr key={index}>
@@ -58,11 +60,7 @@ const HistorialRecargas = () => {
                       : '-'}
                   </td>
                   <td className="border p-2">
-                    {entradaNumerica > 0
-                      ? 'Recarga'
-                      : salidaNumerica > 0
-                      ? 'Abastecimiento'
-                      : '-'}
+                    {entrada > 0 ? 'Recarga' : salida > 0 ? 'Abastecimiento' : '-'}
                   </td>
                   <td className="border p-2">{item.vehiculo || '-'}</td>
                   <td className="border p-2 text-right">
@@ -70,10 +68,20 @@ const HistorialRecargas = () => {
                   </td>
                   <td className="border p-2">{item.chofer || '-'}</td>
                   <td className="border p-2 text-right">
-                    {entradaRaw || '-'}
+                    {entrada > 0
+                      ? entrada.toLocaleString('es-ES', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                      : '-'}
                   </td>
                   <td className="border p-2 text-right">
-                    {salidaRaw || '-'}
+                    {salida > 0
+                      ? salida.toLocaleString('es-ES', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })
+                      : '-'}
                   </td>
                   <td className="border p-2 text-right font-bold">
                     {stockAcumulado.toLocaleString('es-ES', {
@@ -92,6 +100,7 @@ const HistorialRecargas = () => {
 };
 
 export default HistorialRecargas;
+
 
 
 
