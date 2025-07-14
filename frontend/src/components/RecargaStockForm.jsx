@@ -1,5 +1,4 @@
-// RecargaStockForm.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import API_BASE_URL from '../config';
 
@@ -11,16 +10,15 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
   const [mensaje, setMensaje] = useState('');
   const [choferes, setChoferes] = useState([]);
 
-  const cargarChoferes = async () => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/api/choferes`);
-      setChoferes(res.data);
-    } catch (error) {
-      console.error('Error al cargar choferes:', error);
-    }
-  };
-
-  useState(() => {
+  useEffect(() => {
+    const cargarChoferes = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/choferes`);
+        setChoferes(res.data);
+      } catch (error) {
+        console.error('Error al cargar choferes:', error);
+      }
+    };
     cargarChoferes();
   }, []);
 
@@ -32,13 +30,17 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API_BASE_URL}/api/recarga-stock`, formulario);
+      const datosAEnviar = {
+        cantlitros: parseFloat(formulario.CantLitros),
+        choferid: parseInt(formulario.ChoferID),
+        fecha: new Date().toISOString()
+      };
+
+      await axios.post(`${API_BASE_URL}/api/recarga-stock`, datosAEnviar);
       setMensaje('✅ Recarga realizada correctamente');
 
-      // Limpiar formulario
       setFormulario({ CantLitros: '', ChoferID: '' });
 
-      // 🔄 Actualizar el stock desde el componente AbastecimientoForm si está disponible
       if (abastecimientoFormRef?.current?.cargarStock) {
         await abastecimientoFormRef.current.cargarStock();
       }
@@ -95,5 +97,6 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
 };
 
 export default RecargaStockForm;
+
 
 
