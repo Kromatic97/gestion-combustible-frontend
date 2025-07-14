@@ -76,7 +76,7 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
             <option value="">Seleccionar chofer</option>
             {choferes.map(c => (
               <option key={c.choferid} value={c.choferid}>
-                {c.nombrechofer}
+                {c.nombre}
               </option>
             ))}
           </select>
