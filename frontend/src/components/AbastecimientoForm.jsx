@@ -168,7 +168,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
           <select name="ChoferID" value={formulario.ChoferID} onChange={handleChange} required className="w-full border p-2 rounded">
             <option value="">Seleccionar chofer</option>
             {choferes.map(c => (
-              <option key={c.choferid} value={c.choferid}>{c.nombrechofer}</option>
+              <option key={c.choferid} value={c.choferid}>{c.nombre}</option>
             ))}
           </select>
         </div>
