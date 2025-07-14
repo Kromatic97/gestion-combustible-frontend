@@ -1,5 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../config';
 
 const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
   const [formulario, setFormulario] = useState({
@@ -40,7 +41,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
   const cargarVehiculos = async () => {
     try {
-      const res = await axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/vehiculos');
+      const res = await axios.get(`${API_BASE_URL}/api/vehiculos`);
       setVehiculos(res.data);
     } catch (error) {
       console.error('Error al cargar vehículos', error);
@@ -49,7 +50,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
   const cargarChoferes = async () => {
     try {
-      const res = await axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/choferes');
+      const res = await axios.get(`${API_BASE_URL}/api/choferes`);
       setChoferes(res.data);
     } catch (error) {
       console.error('Error al cargar choferes', error);
@@ -58,7 +59,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
   const cargarLugares = async () => {
     try {
-      const res = await axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/lugares');
+      const res = await axios.get(`${API_BASE_URL}/api/lugares`);
       setLugares(res.data);
     } catch (error) {
       console.error('Error al cargar lugares', error);
@@ -67,7 +68,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
   const cargarStock = async () => {
     try {
-      const res = await axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/stock');
+      const res = await axios.get(`${API_BASE_URL}/api/stock`);
       setStock(res.data.litroactual);
       console.log('🟢 Stock actualizado a:', res.data.litroactual);
     } catch (error) {
@@ -77,7 +78,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
   const cargarAbastecimientos = async () => {
     try {
-      const res = await axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/abastecimientos');
+      const res = await axios.get(`${API_BASE_URL}/api/abastecimientos`);
       setAbastecimientos(res.data);
     } catch (error) {
       console.error('Error al cargar abastecimientos:', error);
@@ -99,11 +100,10 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://gestion-combustible-frontend-production.up.railway.app/api/abastecimientos', formulario);
+      await axios.post(`${API_BASE_URL}/api/abastecimientos`, formulario);
 
       setMensaje('✅ Abastecimiento registrado correctamente');
 
-      // Limpiar formulario
       setFormulario({
         Fecha: '',
         VehiculoID: '',
@@ -113,7 +113,6 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
         ChoferID: ''
       });
 
-      // Recargar datos actualizados
       await cargarStock();
       await cargarAbastecimientos();
 
@@ -218,6 +217,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 });
 
 export default AbastecimientoForm;
+
 
 
 

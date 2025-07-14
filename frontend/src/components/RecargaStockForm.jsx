@@ -1,6 +1,7 @@
 // RecargaStockForm.jsx
 import React, { useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../config';
 
 const RecargaStockForm = ({ abastecimientoFormRef }) => {
   const [formulario, setFormulario] = useState({
@@ -12,7 +13,7 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
 
   const cargarChoferes = async () => {
     try {
-      const res = await axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/choferes');
+      const res = await axios.get(`${API_BASE_URL}/api/choferes`);
       setChoferes(res.data);
     } catch (error) {
       console.error('Error al cargar choferes:', error);
@@ -31,7 +32,7 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://gestion-combustible-frontend-production.up.railway.app/api/recarga-stock', formulario);
+      await axios.post(`${API_BASE_URL}/api/recarga-stock`, formulario);
       setMensaje('✅ Recarga realizada correctamente');
 
       // Limpiar formulario

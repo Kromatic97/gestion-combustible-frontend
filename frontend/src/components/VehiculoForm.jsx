@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import API_BASE_URL from '../config';
 
 const VehiculoForm = () => {
   const [marcas, setMarcas] = useState([]);
@@ -18,15 +19,15 @@ const VehiculoForm = () => {
   });
 
   useEffect(() => {
-    axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/marcas')
+    axios.get(`${API_BASE_URL}/api/marcas`)
       .then(res => setMarcas(res.data))
       .catch(err => console.error('Error cargando marcas:', err));
 
-    axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/modelos')
+    axios.get(`${API_BASE_URL}/api/modelos`)
       .then(res => setModelos(res.data))
       .catch(err => console.error('Error cargando modelos:', err));
 
-    axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/tiposvehiculo')
+    axios.get(`${API_BASE_URL}/api/tiposvehiculo`)
       .then(res => setTipos(res.data))
       .catch(err => console.error('Error cargando tipos:', err));
   }, []);
@@ -41,7 +42,7 @@ const VehiculoForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://gestion-combustible-frontend-production.up.railway.app/api/vehiculos', formulario);
+      await axios.post(`${API_BASE_URL}/api/vehiculos`, formulario);
       setMensaje('✅ Vehículo registrado correctamente');
       setFormulario({
         denominacion: '',

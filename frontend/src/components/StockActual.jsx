@@ -1,12 +1,13 @@
 import { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../config';
 
 const StockActual = forwardRef((props, ref) => {
   const [litros, setLitros] = useState(null);
 
   const cargarStock = async () => {
     try {
-      const res = await axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/stock');
+      const res = await axios.get(`${API_BASE_URL}/api/stock`);
       setLitros(res.data.litroactual);
     } catch (error) {
       console.error('Error al obtener stock actual:', error);

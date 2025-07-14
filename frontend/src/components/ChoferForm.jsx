@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import API_BASE_URL from '../config';
 
 function ChoferForm() {
   const [nombre, setNombre] = useState('');
@@ -10,11 +11,10 @@ function ChoferForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://gestion-combustible-frontend-production.up.railway.app/api/choferes', { nombre });
+      await axios.post(`${API_BASE_URL}/api/choferes`, { nombre });
       setMensaje('✅ Chofer registrado correctamente');
       setNombre('');
 
-      // Redirigir luego de un breve delay
       setTimeout(() => {
         navigate('/');
       }, 1000);
@@ -53,5 +53,6 @@ function ChoferForm() {
 }
 
 export default ChoferForm;
+
 
 

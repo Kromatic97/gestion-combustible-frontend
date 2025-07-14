@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
+import API_BASE_URL from '../config';
 
 const HistorialAbastecimientos = () => {
   const [fechaInicio, setFechaInicio] = useState('');
@@ -10,7 +11,7 @@ const HistorialAbastecimientos = () => {
 
   const consultarHistorial = async () => {
     try {
-      const res = await axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/abastecimientos-rango', {
+      const res = await axios.get(`${API_BASE_URL}/api/abastecimientos-rango`, {
         params: {
           desde: fechaInicio,
           hasta: fechaFin

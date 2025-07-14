@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../config';
 
 const HistorialRecargas = () => {
   const [data, setData] = useState([]);
@@ -7,7 +8,7 @@ const HistorialRecargas = () => {
   useEffect(() => {
     const fetchHistorial = async () => {
       try {
-        const response = await axios.get('https://gestion-combustible-frontend-production.up.railway.app/api/historial-stock');
+        const response = await axios.get(`${API_BASE_URL}/api/historial-stock`);
         setData(response.data);
       } catch (error) {
         console.error('Error al cargar historial:', error);
