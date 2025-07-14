@@ -42,44 +42,44 @@ const HistorialRecargas = () => {
           </thead>
           <tbody>
             {data.map((item, index) => {
-              const entrada = parseFloat(item.litrosentrada) || 0;
-              const salida = parseFloat(item.litrossalida) || 0;
-              const odometro = parseFloat(item.kilometraje) || 0;
+              const entradaRaw = item.litrosentrada;
+              const salidaRaw = item.litrossalida;
 
-              stockAcumulado += entrada - salida;
+              const entradaNumerica = parseFloat(entradaRaw?.replace('.', '').replace(',', '.') || 0);
+              const salidaNumerica = parseFloat(salidaRaw?.replace('.', '').replace(',', '.') || 0);
+
+              stockAcumulado += entradaNumerica - salidaNumerica;
 
               return (
                 <tr key={index}>
                   <td className="border p-2">
                     {item.fechatransaccion
-                      ? new Date(item.fechatransaccion).toLocaleString('es-ES')
+                      ? new Date(item.fechatransaccion).toLocaleString()
                       : '-'}
                   </td>
-
                   <td className="border p-2">
-                    {entrada > 0 ? 'Recarga'
-                     : salida > 0 ? 'Abastecimiento'
-                     : '-'}
+                    {entradaNumerica > 0
+                      ? 'Recarga'
+                      : salidaNumerica > 0
+                      ? 'Abastecimiento'
+                      : '-'}
                   </td>
-
                   <td className="border p-2">{item.vehiculo || '-'}</td>
-
                   <td className="border p-2 text-right">
-                    {odometro > 0 ? odometro.toLocaleString('es-ES') : '-'}
+                    {item.kilometraje ? item.kilometraje : '-'}
                   </td>
-
                   <td className="border p-2">{item.chofer || '-'}</td>
-
                   <td className="border p-2 text-right">
-                    {entrada > 0 ? entrada.toLocaleString('es-ES') : '-'}
+                    {entradaRaw || '-'}
                   </td>
-
                   <td className="border p-2 text-right">
-                    {salida > 0 ? salida.toLocaleString('es-ES') : '-'}
+                    {salidaRaw || '-'}
                   </td>
-
                   <td className="border p-2 text-right font-bold">
-                    {stockAcumulado.toLocaleString('es-ES', { minimumFractionDigits: 2 })}
+                    {stockAcumulado.toLocaleString('es-ES', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </td>
                 </tr>
               );
@@ -92,6 +92,7 @@ const HistorialRecargas = () => {
 };
 
 export default HistorialRecargas;
+
 
 
 
