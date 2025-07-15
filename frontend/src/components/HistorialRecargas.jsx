@@ -18,15 +18,12 @@ const HistorialRecargas = () => {
     fetchHistorial();
   }, []);
 
-  let stockAcumulado = 0;
-
-  // Función para convertir "10.000,00" → 10000.00 (para cálculo)
-  const convertirAFloat = (str) =>
-    str ? parseFloat(str.replace(/\./g, '').replace(',', '.')) : 0;
-
-  // Función para formatear float → "10.000,00"
+  // ✅ Función para formatear números con separador de miles y decimales
   const formatearNumero = (numero) =>
-    numero.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    Number(numero).toLocaleString('es-ES', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -49,37 +46,35 @@ const HistorialRecargas = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((item, index) => {
-              const entrada = convertirAFloat(item.litrosentrada);
-              const salida = convertirAFloat(item.litrossalida);
+            {data.map((item, index) => (
+              <tr key={index}>
+                <td className="border p-2">
+                  {item.fechatransaccion
+                    ? new Date(item.fechatransaccion).toLocaleString()
+                    : '-'}
+                </td>
+                <td className="border p-2">{item.tipo}</td>
+                <td className="border p-2">{item.vehiculo || '-'}</td>
+                <td className="border p-2 text-right">
+                  {item.kilometraje ? item.kilometraje.toLocaleString('es-ES') : '-'}
+                </td>
+                <td className="border p-2">{item.chofer || '-'}</td>
 
-              stockAcumulado += entrada - salida;
-
-              return (
-                <tr key={index}>
-                  <td className="border p-2">
-                    {item.fechatransaccion
-                      ? new Date(item.fechatransaccion).toLocaleString()
-                      : '-'}
-                  </td>
-                  <td className="border p-2">{item.tipo}</td>
-                  <td className="border p-2">{item.vehiculo || '-'}</td>
-                  <td className="border p-2 text-right">
-                    {item.kilometraje ? item.kilometraje.toLocaleString('es-ES') : '-'}
-                  </td>
-                  <td className="border p-2">{item.chofer || '-'}</td>
-                  <td className="border p-2 text-right">
-                    {item.litrosentrada || '-'}
-                  </td>
-                  <td className="border p-2 text-right">
-                    {item.litrossalida || '-'}
-                  </td>
-                  <td className="border p-2 text-right font-bold">
-                    {formatearNumero(stockAcumulado)}
-                  </td>
-                </tr>
-              );
-            })}
+                <td className="border p-2 text-right">
+                  {Number(item.litrosentrada) > 0
+                    ? formatearNumero(item.litrosentrada)
+                    : '-'}
+                </td>
+                <td className="border p-2 text-right">
+                  {Number(item.litrossalida) > 0
+                    ? formatearNumero(item.litrossalida)
+                    : '-'}
+                </td>
+                <td className="border p-2 text-right font-bold">
+                      {item.stock != null ? formatearNumero(item.stock) : '-'}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -88,6 +83,7 @@ const HistorialRecargas = () => {
 };
 
 export default HistorialRecargas;
+
 
 
 
