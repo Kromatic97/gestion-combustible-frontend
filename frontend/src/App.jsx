@@ -33,7 +33,7 @@ function App() {
             <Link to="/recarga-stock" className="text-purple-700 hover:underline">Recargar Stock</Link>
             <Link to="/recargas" className="text-blue-700 hover:underline">Historial Recargas</Link>
             <Link to="/historial-abastecimientos" className="text-blue-700 hover:underline">Historial por Fecha</Link> {/* ✅ Nuevo */}
-             <Link to="/historial-filtrado" className="text-blue-700 hover:underline">Historial por Filtro</Link> {/* ✅ Nuevo */}
+            <Link to="/historial-filtrado" className="inline-block bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800 transition">Ver Historial Filtrado</Link>
           </nav>
 
           <Routes>
