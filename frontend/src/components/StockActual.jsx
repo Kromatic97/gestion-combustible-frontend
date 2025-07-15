@@ -23,9 +23,9 @@ const StockActual = forwardRef((props, ref) => {
   }, []);
 
   return (
-    <div style={{ marginBottom: '20px', padding: '10px', backgroundColor: litros <= 1500 ? '#ffcccc' : '#e6ffe6', borderRadius: '8px' }}>
+    <div style={{ marginBottom: '20px', padding: '10px', backgroundColor: litros <= 500 ? '#ffcccc' : '#e6ffe6', borderRadius: '8px' }}>
       <h3>Stock Actual: {litros !== null ? `${litros} litros` : 'Cargando...'}</h3>
-      {litros !== null && litros <= 1500 && (
+      {litros !== null && litros <= 500 && (
         <p style={{ color: 'red', fontWeight: 'bold' }}>⚠️ ¡Stock bajo! Solicitar recarga.</p>
       )}
     </div>
