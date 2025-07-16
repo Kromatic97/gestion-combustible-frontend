@@ -9,15 +9,31 @@ const HistorialAbastecimientos = () => {
   const [datos, setDatos] = useState([]);
   const [mensaje, setMensaje] = useState('');
 
+  // ✅ Función para mostrar fecha y hora en formato dd/mm/yyyy hh:mm
+  const formatearFechaHoraDDMMYYYY = (fechaISO) => {
+    const fecha = new Date(fechaISO);
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const año = fecha.getFullYear();
+    const horas = String(fecha.getHours()).padStart(2, '0');
+    const minutos = String(fecha.getMinutes()).padStart(2, '0');
+    return `${dia}/${mes}/${año} ${horas}:${minutos}`;
+  };
+
   const consultarHistorial = async () => {
     try {
+      // ✅ Convertimos las fechas para incluir toda la franja horaria del día
+      const desde = `${fechaInicio}T00:00:00`;
+      const hasta = `${fechaFin}T23:59:59`;
+
       const res = await axios.get(`${API_BASE_URL}/api/abastecimientos-rango`, {
         params: {
-          desde: fechaInicio,
-          hasta: fechaFin
+          desde,
+          hasta
         }
       });
       setDatos(res.data);
+
       if (res.data.length === 0) {
         setMensaje('No se encontraron registros en ese rango de fechas');
       } else {
@@ -89,7 +105,7 @@ const HistorialAbastecimientos = () => {
             <tbody>
               {datos.map((a) => (
                 <tr key={a.abastecimientoid}>
-                  <td className="p-2 border">{new Date(a.fecha).toLocaleString()}</td>
+                  <td className="p-2 border">{formatearFechaHoraDDMMYYYY(a.fecha)}</td>
                   <td className="p-2 border">{a.vehiculo}</td>
                   <td className="p-2 border">{a.chofer}</td>
                   <td className="p-2 border text-right">{a.cant_litros}</td>
@@ -115,5 +131,6 @@ const HistorialAbastecimientos = () => {
 };
 
 export default HistorialAbastecimientos;
+
 
 

@@ -124,6 +124,17 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
     }
   };
 
+  // ✅ Función para mostrar fecha y hora en formato dd/mm/yyyy hh:mm
+  const formatearFechaHoraDDMMYYYY = (fechaISO) => {
+    const fecha = new Date(fechaISO);
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const año = fecha.getFullYear();
+    const horas = String(fecha.getHours()).padStart(2, '0');
+    const minutos = String(fecha.getMinutes()).padStart(2, '0');
+    return `${dia}/${mes}/${año} ${horas}:${minutos}`;
+  };
+
   return (
     <div className="bg-white p-6 rounded shadow max-w-6xl mx-auto">
       <h2 className="text-xl font-bold mb-4">Registrar Abastecimiento</h2>
@@ -201,7 +212,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
           <tbody>
             {abastecimientos.map((a) => (
               <tr key={a.abastecimientoid}>
-                <td className="p-2 border">{new Date(a.fecha).toLocaleString()}</td>
+                <td className="p-2 border">{formatearFechaHoraDDMMYYYY(a.fecha)}</td>
                 <td className="p-2 border">{a.vehiculo}</td>
                 <td className="p-2 border">{a.chofer}</td>
                 <td className="p-2 border text-right">{a.cant_litros}</td>
@@ -217,6 +228,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 });
 
 export default AbastecimientoForm;
+
 
 
 
