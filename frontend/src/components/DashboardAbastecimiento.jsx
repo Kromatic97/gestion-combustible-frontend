@@ -19,6 +19,14 @@ const DashboardAbastecimiento = () => {
 
   const dashboardRef = useRef(null);
 
+  const obtenerNombreMes = (numeroMes) => {
+    const meses = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+    return meses[numeroMes - 1];
+  };
+
   const cargarDashboard = async () => {
     try {
       const [vehiculosRes, totalRes, diarioRes, choferRes] = await Promise.all([
@@ -52,7 +60,7 @@ const DashboardAbastecimiento = () => {
           const pdfWidth = pdf.internal.pageSize.getWidth();
           const pdfHeight = (img.height * pdfWidth) / img.width;
           pdf.addImage(img, 'PNG', 0, 0, pdfWidth, pdfHeight);
-          pdf.save(`Dashboard_Abastecimiento_${mes}_${anio}.pdf`);
+          pdf.save(`Dashboard_Abastecimiento_${obtenerNombreMes(mes)}_${anio}.pdf`);
         };
       })
       .catch((error) => {
@@ -72,9 +80,12 @@ const DashboardAbastecimiento = () => {
       </div>
 
       <div ref={dashboardRef} className="bg-white rounded shadow p-6">
-        <h2 className="text-2xl font-bold mb-6 text-center text-blue-900">
+        <h2 className="text-2xl font-bold text-center text-blue-900">
           Dashboard de Abastecimientos
         </h2>
+        <p className="text-center mb-6 text-gray-600">
+          Período: {obtenerNombreMes(mes)} {anio}
+        </p>
 
         <div className="flex flex-wrap justify-center gap-4 mb-6">
           <select
@@ -157,5 +168,6 @@ const DashboardAbastecimiento = () => {
 };
 
 export default DashboardAbastecimiento;
+
 
 
