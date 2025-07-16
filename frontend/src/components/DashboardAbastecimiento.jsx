@@ -5,7 +5,7 @@ import {
   BarChart, Bar
 } from 'recharts';
 import API_BASE_URL from '../config';
-import html2canvas from 'html2canvas';
+import domtoimage from 'dom-to-image';
 import jsPDF from 'jspdf';
 
 const DashboardAbastecimiento = () => {
@@ -17,7 +17,7 @@ const DashboardAbastecimiento = () => {
   const [consumoDiario, setConsumoDiario] = useState([]);
   const [topChofer, setTopChofer] = useState(null);
 
-  const dashboardRef = useRef(null); // ✅ Referencia al contenido a exportar
+  const dashboardRef = useRef(null);
 
   const cargarDashboard = async () => {
     try {
@@ -41,23 +41,27 @@ const DashboardAbastecimiento = () => {
     cargarDashboard();
   }, []);
 
-  // ✅ Función para exportar el dashboard como PDF
   const exportarPDF = () => {
     const input = dashboardRef.current;
-    html2canvas(input).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`Dashboard_Abastecimiento_${mes}_${anio}.pdf`);
-    });
+    domtoimage.toPng(input)
+      .then((dataUrl) => {
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const img = new Image();
+        img.src = dataUrl;
+        img.onload = () => {
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = (img.height * pdfWidth) / img.width;
+          pdf.addImage(img, 'PNG', 0, 0, pdfWidth, pdfHeight);
+          pdf.save(`Dashboard_Abastecimiento_${mes}_${anio}.pdf`);
+        };
+      })
+      .catch((error) => {
+        console.error('❌ Error al generar PDF:', error);
+      });
   };
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      {/* ✅ Botón de exportación */}
       <div className="text-right mb-4">
         <button
           onClick={exportarPDF}
@@ -67,14 +71,11 @@ const DashboardAbastecimiento = () => {
         </button>
       </div>
 
-      {/* ✅ Contenido del dashboard con ref */}
       <div ref={dashboardRef} className="bg-white rounded shadow p-6">
-
         <h2 className="text-2xl font-bold mb-6 text-center text-blue-900">
           Dashboard de Abastecimientos
         </h2>
 
-        {/* Selección de mes/año */}
         <div className="flex flex-wrap justify-center gap-4 mb-6">
           <select
             value={mes}
@@ -106,7 +107,6 @@ const DashboardAbastecimiento = () => {
           </button>
         </div>
 
-        {/* Totales */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div className="bg-green-100 p-4 rounded shadow">
             <p className="text-lg font-semibold text-green-900">Total litros cargados</p>
@@ -126,7 +126,6 @@ const DashboardAbastecimiento = () => {
           </div>
         </div>
 
-        {/* Consumo diario */}
         <div className="mb-10">
           <h3 className="text-xl font-semibold mb-2">Consumo diario - {mes}/{anio}</h3>
           <ResponsiveContainer width="100%" height={250}>
@@ -140,7 +139,6 @@ const DashboardAbastecimiento = () => {
           </ResponsiveContainer>
         </div>
 
-        {/* Top vehículos */}
         <div>
           <h3 className="text-xl font-semibold mb-2">Top 10 vehículos que más cargaron</h3>
           <ResponsiveContainer width="100%" height={300}>
