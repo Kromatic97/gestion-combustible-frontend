@@ -7,8 +7,9 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
     CantLitros: '',
     ChoferID: ''
   });
-  const [mensaje, setMensaje] = useState('');
   const [choferes, setChoferes] = useState([]);
+  const [modalAbierto, setModalAbierto] = useState(false);
+  const [infoModal, setInfoModal] = useState({ litros: 0, choferNombre: '' });
 
   useEffect(() => {
     const cargarChoferes = async () => {
@@ -37,66 +38,101 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
       };
 
       await axios.post(`${API_BASE_URL}/api/recarga-stock`, datosAEnviar);
-      setMensaje('✅ Recarga realizada correctamente');
+
+      const chofer = choferes.find(c => c.choferid === parseInt(formulario.ChoferID));
+      setInfoModal({
+        litros: formulario.CantLitros,
+        choferNombre: chofer?.nombre || 'Desconocido'
+      });
 
       setFormulario({ CantLitros: '', ChoferID: '' });
+      setModalAbierto(true);
 
       if (abastecimientoFormRef?.current?.cargarStock) {
         await abastecimientoFormRef.current.cargarStock();
       }
+
+      // Cierra el modal automáticamente en 3 segundos
+      setTimeout(() => {
+        setModalAbierto(false);
+        setInfoModal({ litros: 0, choferNombre: '' });
+      }, 3000);
+
     } catch (error) {
       console.error('Error al registrar recarga:', error);
-      setMensaje('❌ Error al registrar recarga');
+      alert("❌ Error al registrar recarga");
     }
   };
 
   return (
-    <div className="bg-white p-6 rounded shadow max-w-xl mx-auto">
-      <h2 className="text-xl font-bold mb-4">Recargar Stock</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block">Cantidad de Litros:</label>
-          <input
-            type="number"
-            name="CantLitros"
-            value={formulario.CantLitros}
-            onChange={handleChange}
-            required
-            className="w-full border p-2 rounded"
-          />
-        </div>
+    <>
+      <div className="bg-white p-6 rounded shadow max-w-xl mx-auto">
+        <h2 className="text-xl font-bold mb-4">Recargar Stock</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block font-medium text-sm text-gray-700">Cantidad de Litros:</label>
+            <input
+              type="number"
+              name="CantLitros"
+              value={formulario.CantLitros}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
+            />
+          </div>
 
-        <div>
-          <label className="block">Chofer:</label>
-          <select
-            name="ChoferID"
-            value={formulario.ChoferID}
-            onChange={handleChange}
-            required
-            className="w-full border p-2 rounded"
-          >
-            <option value="">Seleccionar chofer</option>
-            {choferes.map(c => (
-              <option key={c.choferid} value={c.choferid}>
-                {c.nombre}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div>
+            <label className="block font-medium text-sm text-gray-700">Chofer:</label>
+            <select
+              name="ChoferID"
+              value={formulario.ChoferID}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
+            >
+              <option value="">Seleccionar chofer</option>
+              {choferes.map(c => (
+                <option key={c.choferid} value={c.choferid}>
+                  {c.nombre}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="text-right">
-          <button type="submit" className="bg-purple-800 text-white px-6 py-2 rounded">
-            Registrar Recarga
-          </button>
-        </div>
-      </form>
+          <div className="text-right">
+            <button type="submit" className="bg-purple-800 text-white px-6 py-2 rounded hover:bg-purple-900 transition">
+              Registrar Recarga
+            </button>
+          </div>
+        </form>
+      </div>
 
-      {mensaje && <p className="mt-4 text-green-700 font-medium">{mensaje}</p>}
-    </div>
+      {/* Modal */}
+      {modalAbierto && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center">
+            <h3 className="text-xl font-semibold text-green-700 mb-2">✅ Recarga registrada</h3>
+            <p className="text-gray-800 mb-4">
+              Se registró correctamente la carga de <strong>{infoModal.litros} litros</strong> por el chofer <strong>{infoModal.choferNombre}</strong>.
+            </p>
+            <button
+              onClick={() => {
+                setModalAbierto(false);
+                setInfoModal({ litros: 0, choferNombre: '' });
+              }}
+              className="bg-purple-800 text-white px-4 py-2 rounded hover:bg-purple-900 transition"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
 export default RecargaStockForm;
+
 
 
 
