@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useRef } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AbastecimientoForm from "./components/AbastecimientoForm";
@@ -22,10 +23,10 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Layout />}>
+      <Layout>
+        <Routes>
           <Route
-            index
+            path="/"
             element={
               <AbastecimientoForm
                 ref={abastecimientoFormRef}
@@ -33,20 +34,21 @@ function App() {
               />
             }
           />
-          <Route path="vehiculo" element={<VehiculoForm />} />
-          <Route path="chofer" element={<ChoferForm />} />
-          <Route path="recarga-stock" element={<RecargaStockForm />} />
-          <Route path="recargas" element={<HistorialRecargas />} />
-          <Route path="historial-abastecimientos" element={<HistorialAbastecimientos />} />
-          <Route path="historial-filtrado" element={<HistorialFiltrado />} />
-          <Route path="dashboard" element={<DashboardAbastecimiento />} />
-        </Route>
-      </Routes>
+          <Route path="/vehiculo" element={<VehiculoForm />} />
+          <Route path="/chofer" element={<ChoferForm />} />
+          <Route path="/recarga-stock" element={<RecargaStockForm />} />
+          <Route path="/recargas" element={<HistorialRecargas />} />
+          <Route path="/historial-abastecimientos" element={<HistorialAbastecimientos />} />
+          <Route path="/historial-filtrado" element={<HistorialFiltrado />} />
+          <Route path="/dashboard" element={<DashboardAbastecimiento />} />
+        </Routes>
+      </Layout>
     </Router>
   );
 }
 
 export default App;
+
 
 
 
