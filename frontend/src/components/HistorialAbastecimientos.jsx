@@ -121,9 +121,7 @@ const HistorialAbastecimientos = () => {
           <div className="mt-4 font-semibold text-right px-4 text-sm text-gray-700">
             Total litros: {totalLitros.toLocaleString('es-ES', { minimumFractionDigits: 2 })} L
           </div>
-          <div className="mt-1 font-semibold text-right px-4 text-sm text-gray-700">
-            Total kilometraje: {totalKm.toLocaleString('es-ES')} km
-          </div>
+         
 
           <div className="mt-6 text-right">
             <button
