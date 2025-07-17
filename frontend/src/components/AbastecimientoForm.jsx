@@ -1,6 +1,11 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import axios from 'axios';
 import API_BASE_URL from '../config';
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { es } from 'date-fns/locale'; // idioma español
+
+registerLocale("es", es);
 
 const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
   const [formulario, setFormulario] = useState({
@@ -11,6 +16,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
     LugarID: '',
     ChoferID: ''
   });
+
 
   const [vehiculos, setVehiculos] = useState([]);
   const [choferes, setChoferes] = useState([]);
@@ -141,7 +147,15 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label>Fecha:</label>
-          <input type="date" name="Fecha" value={formulario.Fecha} onChange={handleChange} required className="w-full border p-2 rounded" />
+          <DatePicker
+            selected={formulario.Fecha}
+            onChange={(date) => setFormulario((prev) => ({ ...prev, Fecha: date }))}
+            dateFormat="dd/MM/yyyy"
+            placeholderText="dd/mm/yyyy"
+            locale="es"
+            className="w-full border p-2 rounded"
+            required
+          />
         </div>
 
         <div>
