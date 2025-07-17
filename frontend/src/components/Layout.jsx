@@ -4,8 +4,9 @@ import { Moon, Sun, Fuel, Home, User, Truck } from "lucide-react";
 
 const navItems = [
   { label: "Dashboard", icon: <Home />, to: "/" },
+    { label: "Abastecimiento", icon: <Fuel />, to: "/abastecimiento" },
   { label: "Recarga Stock", icon: <Fuel />, to: "/recarga-stock" },
-  { label: "Abastecimientos", icon: <Truck />, to: "/historial-abastecimientos" },
+  { label: "Historial Abastecimientos", icon: <Truck />, to: "/historial-abastecimientos" },
   { label: "Usuarios", icon: <User />, to: "/chofer" },
   { label: "Vehículos", icon: <Truck />, to: "/vehiculo" },
   { label: "Historial Recargas", icon: <Fuel />, to: "/recargas" },
