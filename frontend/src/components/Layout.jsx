@@ -29,7 +29,7 @@ export default function Layout() {
       <aside className="w-64 bg-gray-900 text-white flex flex-col justify-between">
         <div className="p-6">
           <h1 className="text-2xl font-bold mb-8 flex items-center gap-2">
-            <span className="text-indigo-400">🚛</span> Combustible
+            <span className="text-indigo-400"></span> PANEL DE ABASTECIMIENTO
           </h1>
 
           <nav className="space-y-1">
@@ -53,23 +53,7 @@ export default function Layout() {
             ))}
           </nav>
 
-          <div className="mt-8">
-            <p className="text-xs text-gray-500 mb-2">Tus Equipos</p>
-            <ul className="space-y-2 text-sm">
-              <li className="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
-                <span className="w-6 h-6 bg-gray-700 text-xs flex items-center justify-center rounded-full">H</span>
-                Heroicons
-              </li>
-              <li className="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
-                <span className="w-6 h-6 bg-gray-700 text-xs flex items-center justify-center rounded-full">T</span>
-                Tailwind Labs
-              </li>
-              <li className="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
-                <span className="w-6 h-6 bg-gray-700 text-xs flex items-center justify-center rounded-full">W</span>
-                Workcation
-              </li>
-            </ul>
-          </div>
+        
         </div>
 
         {/* Footer usuario */}
