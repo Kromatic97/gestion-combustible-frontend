@@ -18,60 +18,70 @@ const HistorialRecargas = () => {
     fetchHistorial();
   }, []);
 
-  // ✅ Función para formatear números con separador de miles y decimales
   const formatearNumero = (numero) =>
     Number(numero).toLocaleString('es-ES', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
 
+  const formatearFechaHora = (fechaISO) => {
+    const fecha = new Date(fechaISO);
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const año = fecha.getFullYear();
+    const horas = String(fecha.getHours()).padStart(2, '0');
+    const minutos = String(fecha.getMinutes()).padStart(2, '0');
+    return `${dia}/${mes}/${año} ${horas}:${minutos}`;
+  };
+
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold text-center mb-6">
-        📊 Historial Consolidado de Stock
+    <div className="max-w-7xl mx-auto bg-white p-8 rounded-2xl shadow mt-6">
+      <h2 className="text-3xl font-bold text-blue-900 mb-6 text-center">
+        📦 Historial Consolidado de Stock
       </h2>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300 text-sm">
+      <div className="overflow-x-auto rounded border border-gray-200">
+        <table className="min-w-full text-sm text-gray-800 bg-white">
           <thead className="bg-gray-100">
             <tr>
-              <th className="border p-2">Fecha</th>
-              <th className="border p-2">Tipo</th>
-              <th className="border p-2">Vehículo</th>
-              <th className="border p-2">Odómetro</th>
-              <th className="border p-2">Chofer</th>
-              <th className="border p-2">Entrada (L)</th>
-              <th className="border p-2">Salida (L)</th>
-              <th className="border p-2">Stock (L)</th>
+              <th className="px-4 py-2 border">Fecha</th>
+              <th className="px-4 py-2 border">Tipo</th>
+              <th className="px-4 py-2 border">Vehículo</th>
+              <th className="px-4 py-2 border text-right">Odómetro</th>
+              <th className="px-4 py-2 border">Chofer</th>
+              <th className="px-4 py-2 border text-right">Entrada (L)</th>
+              <th className="px-4 py-2 border text-right">Salida (L)</th>
+              <th className="px-4 py-2 border text-right font-bold">Stock (L)</th>
             </tr>
           </thead>
           <tbody>
             {data.map((item, index) => (
-              <tr key={index}>
-                <td className="border p-2">
+              <tr key={index} className="hover:bg-gray-50 border-t">
+                <td className="px-4 py-2 border">
                   {item.fechatransaccion
-                    ? new Date(item.fechatransaccion).toLocaleString()
+                    ? formatearFechaHora(item.fechatransaccion)
                     : '-'}
                 </td>
-                <td className="border p-2">{item.tipo}</td>
-                <td className="border p-2">{item.vehiculo || '-'}</td>
-                <td className="border p-2 text-right">
-                  {item.kilometraje ? item.kilometraje.toLocaleString('es-ES') : '-'}
+                <td className="px-4 py-2 border">{item.tipo}</td>
+                <td className="px-4 py-2 border">{item.vehiculo || '-'}</td>
+                <td className="px-4 py-2 border text-right">
+                  {item.kilometraje
+                    ? item.kilometraje.toLocaleString('es-ES')
+                    : '-'}
                 </td>
-                <td className="border p-2">{item.chofer || '-'}</td>
-
-                <td className="border p-2 text-right">
+                <td className="px-4 py-2 border">{item.chofer || '-'}</td>
+                <td className="px-4 py-2 border text-right">
                   {Number(item.litrosentrada) > 0
                     ? formatearNumero(item.litrosentrada)
                     : '-'}
                 </td>
-                <td className="border p-2 text-right">
+                <td className="px-4 py-2 border text-right">
                   {Number(item.litrossalida) > 0
                     ? formatearNumero(item.litrossalida)
                     : '-'}
                 </td>
-                <td className="border p-2 text-right font-bold">
-                      {item.stock != null ? formatearNumero(item.stock) : '-'}
+                <td className="px-4 py-2 border text-right font-bold">
+                  {item.stock != null ? formatearNumero(item.stock) : '-'}
                 </td>
               </tr>
             ))}
@@ -83,6 +93,7 @@ const HistorialRecargas = () => {
 };
 
 export default HistorialRecargas;
+
 
 
 

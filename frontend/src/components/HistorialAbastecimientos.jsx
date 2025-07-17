@@ -9,7 +9,6 @@ const HistorialAbastecimientos = () => {
   const [datos, setDatos] = useState([]);
   const [mensaje, setMensaje] = useState('');
 
-  // ✅ Función para mostrar fecha y hora en formato dd/mm/yyyy hh:mm
   const formatearFechaHoraDDMMYYYY = (fechaISO) => {
     const fecha = new Date(fechaISO);
     const dia = String(fecha.getDate()).padStart(2, '0');
@@ -22,26 +21,18 @@ const HistorialAbastecimientos = () => {
 
   const consultarHistorial = async () => {
     try {
-      // ✅ Convertimos las fechas para incluir toda la franja horaria del día
       const desde = `${fechaInicio}T00:00:00`;
       const hasta = `${fechaFin}T23:59:59`;
 
       const res = await axios.get(`${API_BASE_URL}/api/abastecimientos-rango`, {
-        params: {
-          desde,
-          hasta
-        }
+        params: { desde, hasta }
       });
-      setDatos(res.data);
 
-      if (res.data.length === 0) {
-        setMensaje('No se encontraron registros en ese rango de fechas');
-      } else {
-        setMensaje('');
-      }
+      setDatos(res.data);
+      setMensaje(res.data.length === 0 ? 'No se encontraron registros en ese rango de fechas' : '');
     } catch (error) {
       console.error('Error al consultar historial:', error);
-      setMensaje('Error al consultar historial');
+      setMensaje('❌ Error al consultar historial');
     }
   };
 
@@ -53,34 +44,34 @@ const HistorialAbastecimientos = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto bg-white p-6 rounded shadow mt-6">
-      <h2 className="text-2xl font-bold mb-4 text-blue-800 text-center">
-        Historial de Abastecimientos por Rango de Fechas
+    <div className="max-w-7xl mx-auto bg-white p-8 rounded-2xl shadow-md mt-6">
+      <h2 className="text-3xl font-bold text-center text-blue-900 mb-6">
+        Historial de Abastecimientos
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div>
-          <label className="block font-medium">Desde:</label>
+          <label className="block font-semibold mb-1">Desde:</label>
           <input
             type="date"
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 rounded p-2"
             value={fechaInicio}
             onChange={(e) => setFechaInicio(e.target.value)}
           />
         </div>
         <div>
-          <label className="block font-medium">Hasta:</label>
+          <label className="block font-semibold mb-1">Hasta:</label>
           <input
             type="date"
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 rounded p-2"
             value={fechaFin}
             onChange={(e) => setFechaFin(e.target.value)}
           />
         </div>
         <div className="flex items-end">
           <button
-            className="bg-blue-800 text-white px-6 py-2 rounded w-full"
             onClick={consultarHistorial}
+            className="w-full bg-blue-800 text-white py-2 rounded hover:bg-blue-700 transition"
           >
             Consultar
           </button>
@@ -91,35 +82,37 @@ const HistorialAbastecimientos = () => {
 
       {datos.length > 0 && (
         <>
-          <table className="w-full border text-sm bg-white mt-4">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="p-2 border">Fecha</th>
-                <th className="p-2 border">Vehículo</th>
-                <th className="p-2 border">Chofer</th>
-                <th className="p-2 border">Litros</th>
-                <th className="p-2 border">Kilometraje</th>
-                <th className="p-2 border">Lugar</th>
-              </tr>
-            </thead>
-            <tbody>
-              {datos.map((a) => (
-                <tr key={a.abastecimientoid}>
-                  <td className="p-2 border">{formatearFechaHoraDDMMYYYY(a.fecha)}</td>
-                  <td className="p-2 border">{a.vehiculo}</td>
-                  <td className="p-2 border">{a.chofer}</td>
-                  <td className="p-2 border text-right">{a.cant_litros}</td>
-                  <td className="p-2 border text-right">{a.kilometrajeactual}</td>
-                  <td className="p-2 border">{a.lugar}</td>
+          <div className="overflow-x-auto rounded border border-gray-200">
+            <table className="min-w-full text-sm">
+              <thead className="bg-gray-100 text-gray-700">
+                <tr>
+                  <th className="px-4 py-2 border">Fecha</th>
+                  <th className="px-4 py-2 border">Vehículo</th>
+                  <th className="px-4 py-2 border">Chofer</th>
+                  <th className="px-4 py-2 border text-right">Litros</th>
+                  <th className="px-4 py-2 border text-right">Kilometraje</th>
+                  <th className="px-4 py-2 border">Lugar</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {datos.map((a) => (
+                  <tr key={a.abastecimientoid} className="border-t hover:bg-gray-50">
+                    <td className="px-4 py-2 border">{formatearFechaHoraDDMMYYYY(a.fecha)}</td>
+                    <td className="px-4 py-2 border">{a.vehiculo}</td>
+                    <td className="px-4 py-2 border">{a.chofer}</td>
+                    <td className="px-4 py-2 border text-right">{a.cant_litros}</td>
+                    <td className="px-4 py-2 border text-right">{a.kilometrajeactual}</td>
+                    <td className="px-4 py-2 border">{a.lugar}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-          <div className="mt-4 text-right">
+          <div className="mt-6 text-right">
             <button
-              className="bg-green-800 text-white px-6 py-2 rounded"
               onClick={exportarExcel}
+              className="bg-green-700 text-white px-6 py-2 rounded hover:bg-green-600"
             >
               Descargar Excel
             </button>
@@ -131,6 +124,7 @@ const HistorialAbastecimientos = () => {
 };
 
 export default HistorialAbastecimientos;
+
 
 
 

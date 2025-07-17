@@ -100,7 +100,7 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
           </div>
 
           <div className="text-right">
-            <button type="submit" className="bg-purple-800 text-white px-6 py-2 rounded">
+            <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
               Registrar Recarga
             </button>
           </div>
