@@ -1,11 +1,9 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import axios from 'axios';
 import API_BASE_URL from '../config';
-import DatePicker, { registerLocale } from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { es } from 'date-fns/locale'; // idioma español
 
-registerLocale("es", es);
+
+
 
 const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
   const [formulario, setFormulario] = useState({
