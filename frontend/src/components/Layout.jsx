@@ -1,12 +1,13 @@
+// src/components/Layout.jsx
 import { useState } from "react";
 import { Moon, Sun, Fuel, Home, User, Truck } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 
 const navItems = [
-  { label: "Dashboard", icon: <Home />, href: "/" },
-  { label: "Recargas", icon: <Fuel />, href: "/recargas" },
-  { label: "Abastecimientos", icon: <Truck />, href: "/abastecimientos" },
-  { label: "Usuarios", icon: <User />, href: "/usuarios" },
+    { label: "Abastecimientos", icon: <Truck />, to: "/" },
+    { label: "Recargas", icon: <Fuel />, to: "/recarga-stock" },
+    { label: "Chofer", icon: <User />, to: "/chofer" },
+    { label: "Dashboard", icon: <Home />, to: "/dashboard" },
 ];
 
 export default function Layout() {
@@ -21,7 +22,7 @@ export default function Layout() {
           {navItems.map((item) => (
             <NavLink
               key={item.label}
-              to={item.href}
+              to={item.to}
               className={({ isActive }) =>
                 `flex items-center gap-3 p-2 rounded transition ${
                   isActive ? "bg-gray-200 font-bold" : "hover:bg-gray-100"
@@ -38,7 +39,7 @@ export default function Layout() {
       {/* Main content */}
       <div className="flex-1 flex flex-col">
         <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
-          <h2 className="text-xl font-semibold">Dashboard</h2>
+          <h2 className="text-xl font-semibold">Sistema de Combustible</h2>
 
           <div className="flex items-center gap-4">
             <span className="text-sm hidden sm:block">Hola, Robert</span>
@@ -61,5 +62,6 @@ export default function Layout() {
     </div>
   );
 }
+
 
 
