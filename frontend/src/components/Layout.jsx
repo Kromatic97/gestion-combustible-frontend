@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { Moon, Sun, Fuel, Home, User, Truck, CalendarArrowDown } from "lucide-react";
+import {
+  Moon,
+  Sun,
+  Fuel,
+  Home,
+  User,
+  Truck,
+  CalendarArrowDown,
+} from "lucide-react";
 
 const navItems = [
   { label: "Abastecimientos", icon: <Truck />, to: "/" },
@@ -18,48 +26,85 @@ export default function Layout() {
   return (
     <div className="flex min-h-screen bg-gray-100 text-gray-900">
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md p-4 flex flex-col gap-4">
-        <h1 className="text-2xl font-bold mb-4">🚛 Combustible</h1>
-        <nav className="flex flex-col gap-2">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.label}
-              to={item.to}
-              className={({ isActive }) =>
-                `flex items-center gap-3 p-2 rounded transition ${
-                  isActive ? "bg-blue-100 font-bold text-blue-700" : "hover:bg-gray-200"
-                }`
-              }
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
-        </nav>
+      <aside className="w-64 bg-gray-900 text-white flex flex-col justify-between">
+        <div className="p-6">
+          <h1 className="text-2xl font-bold mb-8 flex items-center gap-2">
+            <span className="text-indigo-400">🚛</span> Combustible
+          </h1>
+
+          <nav className="space-y-1">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.label}
+                to={item.to}
+                className={({ isActive }) =>
+                  `group flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium transition ${
+                    isActive
+                      ? "bg-gray-800 text-white"
+                      : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                  }`
+                }
+              >
+                <div className="flex items-center gap-3">
+                  {item.icon}
+                  <span>{item.label}</span>
+                </div>
+              </NavLink>
+            ))}
+          </nav>
+
+          <div className="mt-8">
+            <p className="text-xs text-gray-500 mb-2">Tus Equipos</p>
+            <ul className="space-y-2 text-sm">
+              <li className="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
+                <span className="w-6 h-6 bg-gray-700 text-xs flex items-center justify-center rounded-full">H</span>
+                Heroicons
+              </li>
+              <li className="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
+                <span className="w-6 h-6 bg-gray-700 text-xs flex items-center justify-center rounded-full">T</span>
+                Tailwind Labs
+              </li>
+              <li className="flex items-center gap-2 text-gray-400 hover:text-white cursor-pointer">
+                <span className="w-6 h-6 bg-gray-700 text-xs flex items-center justify-center rounded-full">W</span>
+                Workcation
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Footer usuario */}
+        <div className="flex items-center justify-between px-6 py-4 border-t border-gray-800">
+          <div className="flex items-center gap-3">
+            <img
+              src="https://i.pravatar.cc/40?img=3"
+              alt="User"
+              className="w-8 h-8 rounded-full"
+            />
+            <div>
+              <p className="text-sm font-medium text-white">Robert</p>
+              <p className="text-xs text-gray-400">Administrador</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="p-2 rounded-full hover:bg-gray-800 text-gray-400 hover:text-white"
+          >
+            {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+        </div>
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col">
-        <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
-          <h2 className="text-xl font-semibold">Panel</h2>
-          <div className="flex items-center gap-4">
-            <span className="text-sm hidden sm:block">Hola, Robert</span>
-            <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">
-              R
-            </div>
-            <button
-              onClick={() => setDarkMode(!darkMode)}
-              className="p-2 rounded-full hover:bg-gray-100"
-            >
-              {darkMode ? <Sun /> : <Moon />}
-            </button>
-          </div>
+      <div className="flex-1 flex flex-col bg-gray-100">
+        <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200 shadow-sm">
+          <h2 className="text-xl font-semibold text-gray-800">Panel</h2>
         </header>
 
-        <main className="p-6 flex-1 overflow-y-auto">
+        <main className="flex-1 p-6 overflow-y-auto">
           <Outlet />
         </main>
       </div>
     </div>
   );
 }
+
