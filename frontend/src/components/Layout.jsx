@@ -1,11 +1,10 @@
-// src/components/Layout.jsx
 import { useState } from "react";
 import { Moon, Sun, Fuel, Home, User, Truck } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 
 const navItems = [
   { label: "Dashboard", icon: <Home />, to: "/dashboard" },
-  { label: "Recargas", icon: <Fuel />, to: "/recarga-stock" },
+  { label: "Recargas", icon: <Fuel />, to: "/recargas" },
   { label: "Abastecimientos", icon: <Truck />, to: "/" },
   { label: "Usuarios", icon: <User />, to: "/chofer" },
 ];
@@ -15,7 +14,6 @@ export default function Layout() {
 
   return (
     <div className="flex min-h-screen bg-gray-100 text-gray-900">
-      {/* Sidebar */}
       <aside className="w-64 bg-white shadow-md p-4 flex flex-col gap-4">
         <h1 className="text-2xl font-bold mb-4">🚛 Combustible</h1>
         <nav className="flex flex-col gap-2">
@@ -36,11 +34,9 @@ export default function Layout() {
         </nav>
       </aside>
 
-      {/* Main content */}
       <div className="flex-1 flex flex-col">
         <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
           <h2 className="text-xl font-semibold">Sistema de Combustible</h2>
-
           <div className="flex items-center gap-4">
             <span className="text-sm hidden sm:block">Hola, Robert</span>
             <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">
@@ -62,6 +58,7 @@ export default function Layout() {
     </div>
   );
 }
+
 
 
 
