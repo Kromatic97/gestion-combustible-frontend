@@ -1,9 +1,11 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import axios from 'axios';
 import API_BASE_URL from '../config';
+import DatePicker, { registerLocale } from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { es } from 'date-fns/locale';
 
-
-
+registerLocale("es", es);
 
 const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
   const [formulario, setFormulario] = useState({
@@ -14,7 +16,6 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
     LugarID: '',
     ChoferID: ''
   });
-
 
   const [vehiculos, setVehiculos] = useState([]);
   const [choferes, setChoferes] = useState([]);
@@ -74,7 +75,6 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
     try {
       const res = await axios.get(`${API_BASE_URL}/api/stock`);
       setStock(res.data.litroactual);
-      console.log('🟢 Stock actualizado a:', res.data.litroactual);
     } catch (error) {
       console.error('Error al cargar stock', error);
     }
@@ -105,9 +105,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
     e.preventDefault();
     try {
       await axios.post(`${API_BASE_URL}/api/abastecimientos`, formulario);
-
       setMensaje('✅ Abastecimiento registrado correctamente');
-
       setFormulario({
         Fecha: '',
         VehiculoID: '',
@@ -116,19 +114,15 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
         LugarID: '',
         ChoferID: ''
       });
-
       await cargarStock();
       await cargarAbastecimientos();
-
       if (onAbastecimientoRegistrado) onAbastecimientoRegistrado();
-
     } catch (error) {
       console.error('Error al registrar abastecimiento:', error);
       setMensaje('❌ Error al registrar el abastecimiento');
     }
   };
 
-  // ✅ Función para mostrar fecha y hora en formato dd/mm/yyyy hh:mm
   const formatearFechaHoraDDMMYYYY = (fechaISO) => {
     const fecha = new Date(fechaISO);
     const dia = String(fecha.getDate()).padStart(2, '0');
@@ -145,8 +139,19 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label>Fecha:</label>
-          <input type="date" name="Fecha" value={formulario.Fecha} o
-          nChange={handleChange} required className="w-full border p-2 rounded" />
+          <DatePicker
+            selected={formulario.Fecha ? new Date(formulario.Fecha) : null}
+            onChange={(date) => {
+              setFormulario(prev => ({
+                ...prev,
+                Fecha: date.toISOString().slice(0, 10)
+              }));
+            }}
+            locale="es"
+            dateFormat="dd/MM/yyyy"
+            className="w-full border p-2 rounded"
+            placeholderText="Seleccionar fecha"
+          />
         </div>
 
         <div>
@@ -233,6 +238,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 });
 
 export default AbastecimientoForm;
+
 
 
 
