@@ -22,10 +22,10 @@ function App() {
 
   return (
     <Router>
-      <Layout>
-        <Routes>
+      <Routes>
+        <Route path="/" element={<Layout />}>
           <Route
-            path="/"
+            index
             element={
               <AbastecimientoForm
                 ref={abastecimientoFormRef}
@@ -33,20 +33,21 @@ function App() {
               />
             }
           />
-          <Route path="/vehiculo" element={<VehiculoForm />} />
-          <Route path="/chofer" element={<ChoferForm />} />
-          <Route path="/recarga-stock" element={<RecargaStockForm />} />
-          <Route path="/recargas" element={<HistorialRecargas />} />
-          <Route path="/historial-abastecimientos" element={<HistorialAbastecimientos />} />
-          <Route path="/historial-filtrado" element={<HistorialFiltrado />} />
-          <Route path="/dashboard" element={<DashboardAbastecimiento />} />
-        </Routes>
-      </Layout>
+          <Route path="vehiculo" element={<VehiculoForm />} />
+          <Route path="chofer" element={<ChoferForm />} />
+          <Route path="recarga-stock" element={<RecargaStockForm />} />
+          <Route path="recargas" element={<HistorialRecargas />} />
+          <Route path="historial-abastecimientos" element={<HistorialAbastecimientos />} />
+          <Route path="historial-filtrado" element={<HistorialFiltrado />} />
+          <Route path="dashboard" element={<DashboardAbastecimiento />} />
+        </Route>
+      </Routes>
     </Router>
   );
 }
 
 export default App;
+
 
 
 
