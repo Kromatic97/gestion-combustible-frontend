@@ -1,14 +1,8 @@
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import {
-  Moon,
-  Sun,
-  Fuel,
-  Home,
-  User,
-  Truck,
-  CalendarArrowDown,
-} from "lucide-react";
+import {Moon, Sun, Fuel,Home, User, Truck, CalendarArrowDown,} from "lucide-react";
+import HistorialAbastecimientos from './components/HistorialAbastecimientos';
+
 
 const navItems = [
   { label: "Abastecimientos", icon: <Truck />, to: "/" },
@@ -17,6 +11,7 @@ const navItems = [
   { label: "Vehículos", icon: <Truck />, to: "/vehiculo" },
   { label: "Historial Recargas", icon: <CalendarArrowDown />, to: "/recargas" },
   { label: "Historial Filtrado", icon: <CalendarArrowDown />, to: "/historial-filtrado" },
+  { label: "Historial Abastecimientos", icon: <CalendarArrowDown />, to: "/historial-abastecimientos" },
   { label: "Dashboard", icon: <Home />, to: "/dashboard" },
 ];
 

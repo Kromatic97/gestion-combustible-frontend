@@ -43,6 +43,13 @@ const HistorialAbastecimientos = () => {
     XLSX.writeFile(wb, 'Historial_Abastecimientos.xlsx');
   };
 
+  // ✅ Suma total de litros y kilometraje
+  const totalLitros = datos.reduce((sum, item) => sum + (item.cant_litros || 0), 0);
+  const totalKm = datos.reduce((sum, item) => sum + (item.kilometrajeactual || 0), 0);
+
+  const formatearNumero = (n) =>
+    Number(n).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
   return (
     <div className="max-w-7xl mx-auto bg-white p-8 rounded-2xl shadow-md mt-6">
       <h2 className="text-3xl font-bold text-center text-blue-900 mb-6">
@@ -100,13 +107,23 @@ const HistorialAbastecimientos = () => {
                     <td className="px-4 py-2 border">{formatearFechaHoraDDMMYYYY(a.fecha)}</td>
                     <td className="px-4 py-2 border">{a.vehiculo}</td>
                     <td className="px-4 py-2 border">{a.chofer}</td>
-                    <td className="px-4 py-2 border text-right">{a.cant_litros}</td>
-                    <td className="px-4 py-2 border text-right">{a.kilometrajeactual}</td>
+                    <td className="px-4 py-2 border text-right">{formatearNumero(a.cant_litros)}</td>
+                    <td className="px-4 py-2 border text-right">{formatearNumero(a.kilometrajeactual)}</td>
                     <td className="px-4 py-2 border">{a.lugar}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* ✅ Resumen de totales */}
+          <div className="mt-4 bg-gray-50 p-4 rounded-lg text-right text-sm text-gray-700">
+            <p>
+              <strong>Total litros:</strong> {formatearNumero(totalLitros)} L
+            </p>
+            <p>
+              <strong>Total kilometraje:</strong> {formatearNumero(totalKm)} km
+            </p>
           </div>
 
           <div className="mt-6 text-right">
@@ -124,6 +141,7 @@ const HistorialAbastecimientos = () => {
 };
 
 export default HistorialAbastecimientos;
+
 
 
 
