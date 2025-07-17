@@ -7,8 +7,8 @@ const navItems = [
   { label: "Recarga Stock", icon: <Fuel />, to: "/recarga-stock" },
   { label: "Usuarios", icon: <User />, to: "/chofer" },
   { label: "Vehículos", icon: <Truck />, to: "/vehiculo" },
-  { label: "Historial Recargas", icon: <Fuel />, to: "/recargas" },
-  { label: "Historial Filtrado", icon: <Date />, to: "/historial-filtrado" },
+  { label: "Historial Recargas", icon: <CalendarArrowDown />, to: "/recargas" },
+  { label: "Historial Filtrado", icon: <CalendarArrowDown />, to: "/historial-filtrado" },
   { label: "Dashboard", icon: <Home />, to: "/dashboard" },
 ];
 
