@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import {Moon, Sun, Fuel,Home, User, Truck, CalendarArrowDown,} from "lucide-react";
-import HistorialAbastecimientos from './components/HistorialAbastecimientos';
+
 
 
 const navItems = [
