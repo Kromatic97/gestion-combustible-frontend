@@ -1,11 +1,11 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import axios from 'axios';
-import API_BASE_URL from '../config';
-import DatePicker, { registerLocale } from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import DatePicker, { registerLocale } from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { es } from 'date-fns/locale';
+import API_BASE_URL from '../config';
 
-registerLocale("es", es);
+registerLocale('es', es);
 
 const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
   const [formulario, setFormulario] = useState({
@@ -23,6 +23,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
   const [mensaje, setMensaje] = useState('');
   const [stock, setStock] = useState(0);
   const [abastecimientos, setAbastecimientos] = useState([]);
+  const [fechaPicker, setFechaPicker] = useState(null);
 
   useImperativeHandle(ref, () => ({
     cargarVehiculos,
@@ -101,6 +102,12 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
     }
   };
 
+  const handleFechaChange = (date) => {
+    setFechaPicker(date);
+    const fechaISO = date?.toISOString() || '';
+    setFormulario(prev => ({ ...prev, Fecha: fechaISO }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -114,6 +121,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
         LugarID: '',
         ChoferID: ''
       });
+      setFechaPicker(null);
       await cargarStock();
       await cargarAbastecimientos();
       if (onAbastecimientoRegistrado) onAbastecimientoRegistrado();
@@ -135,27 +143,24 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
   return (
     <div className="bg-white p-6 rounded shadow max-w-6xl mx-auto">
-      <h2 className="text-xl font-bold mb-4">Registrar Abastecimiento</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <h2 className="text-2xl font-bold mb-6">Registrar Abastecimiento</h2>
+
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label>Fecha:</label>
+          <label className="block mb-1 font-medium">Fecha:</label>
           <DatePicker
-            selected={formulario.Fecha ? new Date(formulario.Fecha) : null}
-            onChange={(date) => {
-              setFormulario(prev => ({
-                ...prev,
-                Fecha: date.toISOString().slice(0, 10)
-              }));
-            }}
-            locale="es"
+            selected={fechaPicker}
+            onChange={handleFechaChange}
             dateFormat="dd/MM/yyyy"
-            className="w-full border p-2 rounded"
+            locale="es"
+            className="w-full border rounded p-2"
             placeholderText="Seleccionar fecha"
+            required
           />
         </div>
 
         <div>
-          <label>Vehículo:</label>
+          <label className="block mb-1 font-medium">Vehículo:</label>
           <select name="VehiculoID" value={formulario.VehiculoID} onChange={handleChange} required className="w-full border p-2 rounded">
             <option value="">Seleccionar vehículo</option>
             {vehiculos.map(v => (
@@ -165,17 +170,17 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
         </div>
 
         <div>
-          <label>Kilometraje Actual:</label>
+          <label className="block mb-1 font-medium">Kilometraje Actual:</label>
           <input type="number" name="KilometrajeActual" value={formulario.KilometrajeActual} onChange={handleChange} required className="w-full border p-2 rounded" />
         </div>
 
         <div>
-          <label>Cantidad de Litros:</label>
+          <label className="block mb-1 font-medium">Cantidad de Litros:</label>
           <input type="number" name="CantLitros" value={formulario.CantLitros} onChange={handleChange} required className="w-full border p-2 rounded" />
         </div>
 
         <div>
-          <label>Lugar:</label>
+          <label className="block mb-1 font-medium">Lugar:</label>
           <select name="LugarID" value={formulario.LugarID} onChange={handleChange} required className="w-full border p-2 rounded">
             <option value="">Seleccionar lugar</option>
             {lugares.map(l => (
@@ -185,7 +190,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
         </div>
 
         <div>
-          <label>Chofer:</label>
+          <label className="block mb-1 font-medium">Chofer:</label>
           <select name="ChoferID" value={formulario.ChoferID} onChange={handleChange} required className="w-full border p-2 rounded">
             <option value="">Seleccionar chofer</option>
             {choferes.map(c => (
@@ -195,7 +200,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
         </div>
 
         <div className="md:col-span-2 text-right">
-          <button type="submit" className="bg-green-800 text-white px-6 py-2 rounded">Registrar Carga</button>
+          <button type="submit" className="bg-green-800 hover:bg-green-700 text-white px-6 py-2 rounded shadow">Registrar Carga</button>
         </div>
       </form>
 
@@ -208,14 +213,14 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
       <div className="mt-8">
         <h3 className="text-lg font-semibold mb-2">Últimos abastecimientos</h3>
-        <table className="w-full border text-sm bg-white">
-          <thead className="bg-gray-200">
+        <table className="w-full border text-sm bg-white rounded">
+          <thead className="bg-gray-100 text-left">
             <tr>
               <th className="p-2 border">Fecha</th>
               <th className="p-2 border">Vehículo</th>
               <th className="p-2 border">Chofer</th>
-              <th className="p-2 border">Litros</th>
-              <th className="p-2 border">Kilometraje</th>
+              <th className="p-2 border text-right">Litros</th>
+              <th className="p-2 border text-right">Kilometraje</th>
               <th className="p-2 border">Lugar</th>
             </tr>
           </thead>
@@ -238,6 +243,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 });
 
 export default AbastecimientoForm;
+
 
 
 
