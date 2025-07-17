@@ -147,15 +147,8 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label>Fecha:</label>
-          <DatePicker
-            selected={formulario.Fecha}
-            onChange={(date) => setFormulario((prev) => ({ ...prev, Fecha: date }))}
-            dateFormat="dd/MM/yyyy"
-            placeholderText="dd/mm/yyyy"
-            locale="es"
-            className="w-full border p-2 rounded"
-            required
-          />
+          <input type="date" name="Fecha" value={formulario.Fecha} o
+          nChange={handleChange} required className="w-full border p-2 rounded" />
         </div>
 
         <div>
