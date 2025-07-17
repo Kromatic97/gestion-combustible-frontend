@@ -1,4 +1,3 @@
-// src/App.jsx
 import React, { useRef } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AbastecimientoForm from "./components/AbastecimientoForm";
@@ -9,7 +8,6 @@ import HistorialRecargas from "./components/HistorialRecargas";
 import HistorialAbastecimientos from "./components/HistorialAbastecimientos";
 import HistorialFiltrado from "./components/HistorialFiltrado";
 import DashboardAbastecimiento from "./components/DashboardAbastecimiento";
-import Layout from "./components/Layout";
 
 function App() {
   const abastecimientoFormRef = useRef();
@@ -23,31 +21,30 @@ function App() {
 
   return (
     <Router>
-      <Layout>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <AbastecimientoForm
-                ref={abastecimientoFormRef}
-                onAbastecimientoRegistrado={recargarAbastecimientos}
-              />
-            }
-          />
-          <Route path="/vehiculo" element={<VehiculoForm />} />
-          <Route path="/chofer" element={<ChoferForm />} />
-          <Route path="/recarga-stock" element={<RecargaStockForm />} />
-          <Route path="/recargas" element={<HistorialRecargas />} />
-          <Route path="/historial-abastecimientos" element={<HistorialAbastecimientos />} />
-          <Route path="/historial-filtrado" element={<HistorialFiltrado />} />
-          <Route path="/dashboard" element={<DashboardAbastecimiento />} />
-        </Routes>
-      </Layout>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <AbastecimientoForm
+              ref={abastecimientoFormRef}
+              onAbastecimientoRegistrado={recargarAbastecimientos}
+            />
+          }
+        />
+        <Route path="/vehiculo" element={<VehiculoForm />} />
+        <Route path="/chofer" element={<ChoferForm />} />
+        <Route path="/recarga-stock" element={<RecargaStockForm />} />
+        <Route path="/recargas" element={<HistorialRecargas />} />
+        <Route path="/historial-abastecimientos" element={<HistorialAbastecimientos />} />
+        <Route path="/historial-filtrado" element={<HistorialFiltrado />} />
+        <Route path="/dashboard" element={<DashboardAbastecimiento />} />
+      </Routes>
     </Router>
   );
 }
 
 export default App;
+
 
 
 
