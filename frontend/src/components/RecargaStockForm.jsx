@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import API_BASE_URL from '../config';
+import { CheckCircle } from 'lucide-react';
 
 const RecargaStockForm = ({ abastecimientoFormRef }) => {
   const [formulario, setFormulario] = useState({
@@ -8,8 +10,10 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
     ChoferID: ''
   });
   const [choferes, setChoferes] = useState([]);
-  const [modalAbierto, setModalAbierto] = useState(false);
-  const [infoModal, setInfoModal] = useState({ litros: 0, choferNombre: '' });
+  const [showModal, setShowModal] = useState(false);
+  const [litrosRecargados, setLitrosRecargados] = useState(0);
+  const [nombreChofer, setNombreChofer] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const cargarChoferes = async () => {
@@ -39,28 +43,24 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
 
       await axios.post(`${API_BASE_URL}/api/recarga-stock`, datosAEnviar);
 
-      const chofer = choferes.find(c => c.choferid === parseInt(formulario.ChoferID));
-      setInfoModal({
-        litros: formulario.CantLitros,
-        choferNombre: chofer?.nombre || 'Desconocido'
-      });
+      const choferSeleccionado = choferes.find(c => c.choferid === parseInt(formulario.ChoferID));
+      setNombreChofer(choferSeleccionado?.nombre || '');
+      setLitrosRecargados(formulario.CantLitros);
+      setShowModal(true);
 
       setFormulario({ CantLitros: '', ChoferID: '' });
-      setModalAbierto(true);
 
       if (abastecimientoFormRef?.current?.cargarStock) {
         await abastecimientoFormRef.current.cargarStock();
       }
 
-      // Cierra el modal automáticamente en 3 segundos
       setTimeout(() => {
-        setModalAbierto(false);
-        setInfoModal({ litros: 0, choferNombre: '' });
+        navigate('/');
       }, 3000);
 
     } catch (error) {
       console.error('Error al registrar recarga:', error);
-      alert("❌ Error al registrar recarga");
+      alert('❌ Error al registrar recarga');
     }
   };
 
@@ -70,25 +70,25 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
         <h2 className="text-xl font-bold mb-4">Recargar Stock</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block font-medium text-sm text-gray-700">Cantidad de Litros:</label>
+            <label className="block">Cantidad de Litros:</label>
             <input
               type="number"
               name="CantLitros"
               value={formulario.CantLitros}
               onChange={handleChange}
               required
-              className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full border p-2 rounded"
             />
           </div>
 
           <div>
-            <label className="block font-medium text-sm text-gray-700">Chofer:</label>
+            <label className="block">Chofer:</label>
             <select
               name="ChoferID"
               value={formulario.ChoferID}
               onChange={handleChange}
               required
-              className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
+              className="w-full border p-2 rounded"
             >
               <option value="">Seleccionar chofer</option>
               {choferes.map(c => (
@@ -100,29 +100,31 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
           </div>
 
           <div className="text-right">
-            <button type="submit" className="bg-purple-800 text-white px-6 py-2 rounded hover:bg-purple-900 transition">
+            <button type="submit" className="bg-purple-800 text-white px-6 py-2 rounded">
               Registrar Recarga
             </button>
           </div>
         </form>
       </div>
 
-      {/* Modal */}
-      {modalAbierto && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md text-center">
-            <h3 className="text-xl font-semibold text-green-700 mb-2">✅ Recarga registrada</h3>
-            <p className="text-gray-800 mb-4">
-              Se registró correctamente la carga de <strong>{infoModal.litros} litros</strong> por el chofer <strong>{infoModal.choferNombre}</strong>.
+      {/* Modal de confirmación */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm text-center">
+            <div className="flex justify-center mb-4">
+              <div className="bg-green-100 rounded-full p-3">
+                <CheckCircle className="text-green-600 w-6 h-6" />
+              </div>
+            </div>
+            <h3 className="text-lg font-semibold text-green-700">Carga registrada exitosamente</h3>
+            <p className="mt-2 text-sm text-gray-700">
+              Se registró correctamente la carga de <strong>{litrosRecargados} litros</strong> por el chofer <strong>{nombreChofer}</strong>.
             </p>
             <button
-              onClick={() => {
-                setModalAbierto(false);
-                setInfoModal({ litros: 0, choferNombre: '' });
-              }}
-              className="bg-purple-800 text-white px-4 py-2 rounded hover:bg-purple-900 transition"
+              onClick={() => navigate('/')}
+              className="mt-4 w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded"
             >
-              Cerrar
+              Volver al panel
             </button>
           </div>
         </div>
@@ -132,6 +134,7 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
 };
 
 export default RecargaStockForm;
+
 
 
 
