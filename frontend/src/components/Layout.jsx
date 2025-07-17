@@ -4,10 +4,10 @@ import { Moon, Sun, Fuel, Home, User, Truck } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 
 const navItems = [
-    { label: "Abastecimientos", icon: <Truck />, to: "/" },
-    { label: "Recargas", icon: <Fuel />, to: "/recarga-stock" },
-    { label: "Chofer", icon: <User />, to: "/chofer" },
-    { label: "Dashboard", icon: <Home />, to: "/dashboard" },
+  { label: "Dashboard", icon: <Home />, to: "/dashboard" },
+  { label: "Recargas", icon: <Fuel />, to: "/recarga-stock" },
+  { label: "Abastecimientos", icon: <Truck />, to: "/" },
+  { label: "Usuarios", icon: <User />, to: "/chofer" },
 ];
 
 export default function Layout() {
