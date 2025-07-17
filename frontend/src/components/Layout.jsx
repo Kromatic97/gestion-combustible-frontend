@@ -29,7 +29,7 @@ export default function Layout() {
       <aside className="w-64 bg-gray-900 text-white flex flex-col justify-between">
         <div className="p-6">
           <h1 className="text-2xl font-bold mb-8 flex items-center gap-2">
-            <span className="text-indigo-400"></span> PANEL DE ABASTECIMIENTO
+            <span className="text-indigo-400"></span> PANEL ABASTECIMIENTO
           </h1>
 
           <nav className="space-y-1">
@@ -54,6 +54,7 @@ export default function Layout() {
           </nav>
 
         
+
         </div>
 
         {/* Footer usuario */}
@@ -81,7 +82,7 @@ export default function Layout() {
       {/* Main content */}
       <div className="flex-1 flex flex-col bg-gray-100">
         <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200 shadow-sm">
-          <h2 className="text-xl font-semibold text-gray-800">Panel</h2>
+          <h2 className="text-xl font-semibold flex intems-center text-gray-800">Cia. Agricola Corpus Christi</h2>
         </header>
 
         <main className="flex-1 p-6 overflow-y-auto">
