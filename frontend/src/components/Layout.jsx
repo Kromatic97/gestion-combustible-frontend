@@ -3,14 +3,13 @@ import { NavLink, Outlet } from "react-router-dom";
 import { Moon, Sun, Fuel, Home, User, Truck } from "lucide-react";
 
 const navItems = [
-  { label: "Dashboard", icon: <Home />, to: "/" },
-    { label: "Abastecimiento", icon: <Fuel />, to: "/abastecimiento" },
+  { label: "Abastecimientos", icon: <Truck />, to: "/" },
   { label: "Recarga Stock", icon: <Fuel />, to: "/recarga-stock" },
-  { label: "Historial Abastecimientos", icon: <Truck />, to: "/historial-abastecimientos" },
   { label: "Usuarios", icon: <User />, to: "/chofer" },
   { label: "Vehículos", icon: <Truck />, to: "/vehiculo" },
   { label: "Historial Recargas", icon: <Fuel />, to: "/recargas" },
   { label: "Historial Filtrado", icon: <Fuel />, to: "/historial-filtrado" },
+  { label: "Dashboard", icon: <Home />, to: "/dashboard" },
 ];
 
 export default function Layout() {
@@ -41,12 +40,13 @@ export default function Layout() {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col">
-        {/* Header */}
         <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
           <h2 className="text-xl font-semibold">Panel</h2>
           <div className="flex items-center gap-4">
             <span className="text-sm hidden sm:block">Hola, Robert</span>
-            <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">R</div>
+            <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">
+              R
+            </div>
             <button
               onClick={() => setDarkMode(!darkMode)}
               className="p-2 rounded-full hover:bg-gray-100"

@@ -14,14 +14,14 @@ function App() {
     <Router>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<DashboardAbastecimiento />} />
-          <Route path="/abastecimientos" element={<AbastecimientoForm />} />
+          <Route path="/" element={<AbastecimientoForm />} />
           <Route path="/vehiculo" element={<VehiculoForm />} />
           <Route path="/chofer" element={<ChoferForm />} />
           <Route path="/recarga-stock" element={<RecargaStockForm />} />
           <Route path="/recargas" element={<HistorialRecargas />} />
           <Route path="/historial-abastecimientos" element={<HistorialAbastecimientos />} />
           <Route path="/historial-filtrado" element={<HistorialFiltrado />} />
+          <Route path="/dashboard" element={<DashboardAbastecimiento />} />
         </Route>
       </Routes>
     </Router>
@@ -29,6 +29,7 @@ function App() {
 }
 
 export default App;
+
 
 
 
