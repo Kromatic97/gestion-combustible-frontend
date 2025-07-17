@@ -42,9 +42,9 @@ export default function Dashboard() {
         axios.get(`/api/dashboard/top-chofer?anio=${anio}&mes=${mes}`),
       ]);
 
-      setTopVehiculos(vehiculosRes.data);
+      setTopVehiculos(Array.isArray(vehiculosRes.data) ? vehiculosRes.data : []);
       setTotalLitros(Number(totalRes.data?.total_litros || 0));
-      setConsumoDiario(diarioRes.data);
+      setConsumoDiario(Array.isArray(diarioRes.data) ? diarioRes.data : []);
       setTopChofer(choferRes.data);
     } catch (error) {
       console.error("Error al cargar dashboard:", error);
@@ -140,7 +140,7 @@ export default function Dashboard() {
 
           <div className="bg-white shadow-md rounded-xl p-6">
             <h2 className="text-sm text-gray-500">Top 1 vehículo del mes</h2>
-            {topVehiculos[0] ? (
+            {topVehiculos.length > 0 ? (
               <div>
                 <p className="text-lg font-medium text-gray-700">{topVehiculos[0].vehiculo}</p>
                 <p className="text-sm text-gray-600">{Number(topVehiculos[0].litros_total).toLocaleString()} L</p>
@@ -181,6 +181,5 @@ export default function Dashboard() {
     </div>
   );
 }
-
 
 
