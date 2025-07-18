@@ -239,32 +239,40 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
       </div>
 
       <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-2">Últimos abastecimientos</h3>
-        <table className="w-full border text-sm bg-white">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="p-2 border">Fecha</th>
-              <th className="p-2 border">Vehículo</th>
-              <th className="p-2 border">Chofer</th>
-              <th className="p-2 border">Litros</th>
-              <th className="p-2 border">Kilometraje</th>
-              <th className="p-2 border">Lugar</th>
-            </tr>
-          </thead>
-          <tbody>
-            {abastecimientos.map((a) => (
-              <tr key={a.abastecimientoid}>
-                <td className="p-2 border">{formatearFechaHora(a.fecha)}</td>
-                <td className="p-2 border">{a.vehiculo}</td>
-                <td className="p-2 border">{a.chofer}</td>
-                <td className="p-2 border text-right">{parseFloat(a.cant_litros).toLocaleString('es-PY', { minimumFractionDigits: 2, maximusFractionDigits: 2 })}</td>
-                <td className="p-2 border text-right">{parseFloat(a.kilometrajeactual).toLocaleString('es-PY', { minimumFractionDigits: 2, maximusFractionDigits: 2 })}</td>
-                <td className="p-2 border">{a.lugar}</td>
+        <h3 className="text-lg font-semibold mb-4 text-blue-800">Últimos abastecimientos</h3>
+        <div className="overflow-x-auto rounded-lg shadow">
+          <table className="min-w-full divide-y divide-gray-200 bg-white">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Fecha</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Vehículo</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Chofer</th>
+                <th className="px-4 py-2 text-right text-sm font-semibold text-gray-600">Litros</th>
+                <th className="px-4 py-2 text-right text-sm font-semibold text-gray-600">Kilometraje</th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-600">Lugar</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {abastecimientos.map((a) => (
+                <tr key={a.abastecimientoid} className="hover:bg-gray-50">
+                  <td className="px-4 py-2 text-sm text-gray-700">{formatearFechaHora(a.fecha)}</td>
+                  <td className="px-4 py-2 text-sm text-gray-700">{a.vehiculo}</td>
+                  <td className="px-4 py-2 text-sm text-gray-700">{a.chofer}</td>
+                  <td className="px-4 py-2 text-sm text-right text-gray-700">
+                    {parseFloat(a.cant_litros).toLocaleString('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </td>
+                  <td className="px-4 py-2 text-sm text-right text-gray-700">
+                    {parseFloat(a.kilometrajeactual).toLocaleString('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </td>
+                  <td className="px-4 py-2 text-sm text-gray-700">{a.lugar}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
+
+
     </div>
   );
 });

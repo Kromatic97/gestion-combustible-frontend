@@ -43,9 +43,9 @@ const HistorialAbastecimientos = () => {
     XLSX.writeFile(wb, 'Historial_Abastecimientos.xlsx');
   };
 
-  // ✅ Calcular totales
+  // Calcular totales
   const totalLitros = datos.reduce((sum, item) => sum + (Number(item.cant_litros) || 0), 0);
-  const totalKm = datos.reduce((sum, item) => sum + (Number(item.kilometrajeactual) || 0), 0);
+  //const totalKm = datos.reduce((sum, item) => sum + (Number(item.kilometrajeactual) || 0), 0);
 
   return (
     <div className="max-w-7xl mx-auto bg-white p-8 rounded-2xl shadow-md mt-6">
@@ -86,41 +86,45 @@ const HistorialAbastecimientos = () => {
 
       {datos.length > 0 && (
         <>
-          <div className="overflow-x-auto rounded border border-gray-200">
-            <table className="min-w-full text-sm">
-              <thead className="bg-gray-100 text-gray-700">
-                <tr>
-                  <th className="px-4 py-2 border">Fecha</th>
-                  <th className="px-4 py-2 border">Vehículo</th>
-                  <th className="px-4 py-2 border">Chofer</th>
-                  <th className="px-4 py-2 border text-right">Litros</th>
-                  <th className="px-4 py-2 border text-right">Kilometraje</th>
-                  <th className="px-4 py-2 border">Lugar</th>
-                </tr>
-              </thead>
-              <tbody>
-                {datos.map((a) => (
-                  <tr key={a.abastecimientoid} className="border-t hover:bg-gray-50">
-                    <td className="px-4 py-2 border">{formatearFechaHoraDDMMYYYY(a.fecha)}</td>
-                    <td className="px-4 py-2 border">{a.vehiculo}</td>
-                    <td className="px-4 py-2 border">{a.chofer}</td>
-                    <td className="px-4 py-2 border text-right">
-                      {Number(a.cant_litros).toLocaleString('es-ES', { minimumFractionDigits: 2 })}
-                    </td>
-                    <td className="px-4 py-2 border text-right">
-                      {Number(a.kilometrajeactual).toLocaleString('es-ES')}
-                    </td>
-                    <td className="px-4 py-2 border">{a.lugar}</td>
+          <div className="overflow-x-auto rounded-lg shadow border border-gray-200">
+              <table className="min-w-full divide-y divide-gray-100 bg-white text-sm">
+                <thead className="bg-gray-100 text-gray-700">
+                  <tr>
+                    <th className="px-4 py-2 text-left font-semibold">Fecha</th>
+                    <th className="px-4 py-2 text-left font-semibold">Vehículo</th>
+                    <th className="px-4 py-2 text-left font-semibold">Chofer</th>
+                    <th className="px-4 py-2 text-right font-semibold">Litros</th>
+                    <th className="px-4 py-2 text-right font-semibold">Kilometraje</th>
+                    <th className="px-4 py-2 text-left font-semibold">Lugar</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {datos.map((a) => (
+                    <tr key={a.abastecimientoid} className="hover:bg-gray-50">
+                      <td className="px-4 py-2 text-gray-700">{formatearFechaHoraDDMMYYYY(a.fecha)}</td>
+                      <td className="px-4 py-2 text-gray-700">{a.vehiculo}</td>
+                      <td className="px-4 py-2 text-gray-700">{a.chofer}</td>
+                      <td className="px-4 py-2 text-right text-gray-700">
+                        {Number(a.cant_litros).toLocaleString('es-ES', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-4 py-2 text-right text-gray-700">
+                        {Number(a.kilometrajeactual).toLocaleString('es-ES', { minimumFractionDigits: 2 })}
+                      </td>
+                      <td className="px-4 py-2 text-gray-700">{a.lugar}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-          {/* ✅ Totales */}
-          <div className="mt-4 font-semibold text-right px-4 text-sm text-gray-700">
-            Total litros: {totalLitros.toLocaleString('es-ES', { minimumFractionDigits: 2 })} L
-          </div>
+            {/* Totales */}
+            <div className="mt-4 text-right text-sm font-semibold text-gray-700 px-2">
+              Total litros:{' '}
+              <span className="text-blue-800">
+                {totalLitros.toLocaleString('es-ES', { minimumFractionDigits: 2 })} L
+              </span>
+            </div>
+
          
 
           <div className="mt-6 text-right">
