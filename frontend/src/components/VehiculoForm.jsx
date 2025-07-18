@@ -94,7 +94,7 @@ const VehiculoForm = () => {
           <input type="number" name="kilometrajeodometro" value={formulario.kilometrajeodometro} onChange={handleChange} className="w-full border p-2 rounded" required />
         </div>
         <div className="text-right">
-          <button type="submit" className="bg-green-800 text-white px-4 py-2 rounded">Registrar Vehículo</button>
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Registrar Vehículo</button>
         </div>
       </form>
       {mensaje && <p className="mt-4 text-blue-700 font-medium">{mensaje}</p>}

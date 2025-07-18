@@ -45,7 +45,7 @@ function ChoferForm() {
 
           <button
             type="submit"
-            className="bg-green-900 text-white px-6 py-2 rounded hover:bg-green-800 transition"
+            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-green-800 transition"
           >
             Registrar Chofer
           </button>

@@ -204,9 +204,13 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
       {mensaje && <p className="mt-4 text-green-700 font-medium">{mensaje}</p>}
 
-      <div className="mt-6 p-4 bg-blue-100 rounded">
+      <div className="mt-6 p-4 bg-blue-400 rounded">
         <p className="text-lg font-semibold text-blue-800">Stock Actual</p>
-        <p className="text-2xl font-mono">{stock.toLocaleString('es-PY')} litros</p>
+
+        <p className="text-lg font-mono text-green-700">{Number(stock).toLocaleString('es-PY',{
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,})} litros</p>
+      
       </div>
 
       <div className="mt-8">
