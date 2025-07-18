@@ -1,28 +1,14 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import axios from 'axios';
-import Select from 'react-select';
 import API_BASE_URL from '../config';
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { es } from 'date-fns/locale';
-import NumericInputPad from './NumericInputPad';
-
+import Select from 'react-select';
+import NumericInputPad from './NumericInputPad'; // Asegúrate de tener este componente
 
 registerLocale("es", es);
-const customStyles = {
-  control: (base) => ({
-    ...base,
-    padding: '0.25rem',
-    borderRadius: '0.375rem',
-    borderColor: '#d1d5db',
-    boxShadow: 'none',
-    '&:hover': { borderColor: '#9ca3af' },
-  }),
-  menu: (base) => ({
-    ...base,
-    zIndex: 50,
-  }),
-};
+
 const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
   const [formulario, setFormulario] = useState({
     Fecha: '',
@@ -61,58 +47,43 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
   };
 
   const cargarVehiculos = async () => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/api/vehiculos`);
-      setVehiculos(res.data);
-    } catch (error) {
-      console.error('Error al cargar vehículos', error);
-    }
+    const res = await axios.get(`${API_BASE_URL}/api/vehiculos`);
+    setVehiculos(res.data);
   };
 
   const cargarChoferes = async () => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/api/choferes`);
-      setChoferes(res.data);
-    } catch (error) {
-      console.error('Error al cargar choferes', error);
-    }
+    const res = await axios.get(`${API_BASE_URL}/api/choferes`);
+    setChoferes(res.data);
   };
 
   const cargarLugares = async () => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/api/lugares`);
-      setLugares(res.data);
-    } catch (error) {
-      console.error('Error al cargar lugares', error);
-    }
+    const res = await axios.get(`${API_BASE_URL}/api/lugares`);
+    setLugares(res.data);
   };
 
   const cargarStock = async () => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/api/stock`);
-      setStock(res.data.litroactual);
-    } catch (error) {
-      console.error('Error al cargar stock', error);
-    }
+    const res = await axios.get(`${API_BASE_URL}/api/stock`);
+    setStock(res.data.litroactual);
   };
 
   const cargarAbastecimientos = async () => {
-    try {
-      const res = await axios.get(`${API_BASE_URL}/api/abastecimientos`);
-      setAbastecimientos(res.data);
-    } catch (error) {
-      console.error('Error al cargar abastecimientos:', error);
-    }
+    const res = await axios.get(`${API_BASE_URL}/api/abastecimientos`);
+    setAbastecimientos(res.data);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormulario(prev => ({ ...prev, [name]: value }));
+  const handleSelectChange = (selectedOption, name) => {
+    setFormulario(prev => ({
+      ...prev,
+      [name]: selectedOption ? selectedOption.value : ''
+    }));
 
     if (name === 'VehiculoID') {
-      const vehiculo = vehiculos.find(v => v.vehiculoid === parseInt(value));
+      const vehiculo = vehiculos.find(v => v.vehiculoid === selectedOption.value);
       if (vehiculo) {
-        setFormulario(prev => ({ ...prev, KilometrajeActual: vehiculo.kilometrajeodometro }));
+        setFormulario(prev => ({
+          ...prev,
+          KilometrajeActual: vehiculo.kilometrajeodometro
+        }));
       }
     }
   };
@@ -121,7 +92,6 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
     e.preventDefault();
     try {
       await axios.post(`${API_BASE_URL}/api/abastecimientos`, formulario);
-
       setMensaje('✅ Abastecimiento registrado correctamente');
 
       setFormulario({
@@ -135,7 +105,6 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
       await cargarStock();
       await cargarAbastecimientos();
-
       if (onAbastecimientoRegistrado) onAbastecimientoRegistrado();
 
     } catch (error) {
@@ -158,117 +127,77 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
     <div className="bg-white p-6 rounded shadow max-w-6xl mx-auto">
       <h2 className="text-xl font-bold mb-4">Registrar Abastecimiento</h2>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        
-        <div className="w-full">
-          <label className="block mb-1">Fecha:</label>
-          <div className="relative">
-            <DatePicker
-              selected={formulario.Fecha ? new Date(formulario.Fecha) : null}
-              onChange={(date) => setFormulario(prev => ({ ...prev, Fecha: date.toISOString() }))}
-              locale="es"
-              dateFormat="dd/MM/yyyy"
-              placeholderText="Seleccionar fecha"
-              className="w-full border p-2 rounded"
-            />
-          </div>
+
+        <div>
+          <label>Fecha:</label>
+          <DatePicker
+            selected={formulario.Fecha ? new Date(formulario.Fecha) : null}
+            onChange={(date) => setFormulario(prev => ({ ...prev, Fecha: date.toISOString() }))}
+            locale="es"
+            dateFormat="dd/MM/yyyy"
+            placeholderText="Seleccionar fecha"
+            className="w-full border p-2 rounded"
+          />
         </div>
 
         <div>
           <label>Vehículo:</label>
           <Select
-            options={vehiculos.map(v => ({
-              value: v.vehiculoid,
-              label: v.denominacion
-            }))}
-            value={vehiculos.find(v => v.vehiculoid === parseInt(formulario.VehiculoID)) ?
-                  { value: formulario.VehiculoID, label: vehiculos.find(v => v.vehiculoid === parseInt(formulario.VehiculoID))?.denominacion } : null}
-            onChange={(selected) => {
-              const vehiculo = vehiculos.find(v => v.vehiculoid === selected?.value);
-              setFormulario(prev => ({
-                ...prev,
-                VehiculoID: selected?.value || '',
-                KilometrajeActual: vehiculo?.kilometrajeodometro || ''
-              }));
-            }}
-            styles={customStyles}
+            options={vehiculos.map(v => ({ label: v.denominacion, value: v.vehiculoid }))}
+            value={vehiculos.find(v => v.vehiculoid === formulario.VehiculoID) ? { label: vehiculos.find(v => v.vehiculoid === formulario.VehiculoID).denominacion, value: formulario.VehiculoID } : null}
+            onChange={(option) => handleSelectChange(option, 'VehiculoID')}
             placeholder="Seleccionar vehículo"
-            isClearable
           />
         </div>
 
-        <NumericInputPad
-          label="Kilometraje Actual"
-          value={formulario.KilometrajeActual}
-          onChange={(val) =>
-          setFormulario((prev) => ({ ...prev, KilometrajeActual: val }))
-          }
+        <div>
+          <label>Kilometraje Actual:</label>
+          <NumericInputPad
+            value={formulario.KilometrajeActual}
+            onChange={(value) => setFormulario(prev => ({ ...prev, KilometrajeActual: value }))}
+            placeholder="Ingrese kilometraje"
           />
+        </div>
 
-
-       <NumericInputPad
-        label="Cantidad de Litros"
-        value={formulario.CantLitros}
-        onChange={(val) =>
-          setFormulario((prev) => ({ ...prev, CantLitros: val }))
-        }
-        />
+        <div>
+          <label>Cantidad de Litros:</label>
+          <NumericInputPad
+            value={formulario.CantLitros}
+            onChange={(value) => setFormulario(prev => ({ ...prev, CantLitros: value }))}
+            placeholder="Ingrese litros"
+          />
+        </div>
 
         <div>
           <label>Lugar:</label>
           <Select
-            options={lugares.map(l => ({
-              value: l.lugarid,
-              label: l.nombrelugar
-            }))}
-            value={lugares.find(l => l.lugarid === parseInt(formulario.LugarID)) ?
-                  { value: formulario.LugarID, label: lugares.find(l => l.lugarid === parseInt(formulario.LugarID))?.nombrelugar } : null}
-            onChange={(selected) =>
-              setFormulario(prev => ({
-                ...prev,
-                LugarID: selected?.value || ''
-              }))
-            }
-            styles={customStyles}
+            options={lugares.map(l => ({ label: l.nombrelugar, value: l.lugarid }))}
+            value={lugares.find(l => l.lugarid === formulario.LugarID) ? { label: lugares.find(l => l.lugarid === formulario.LugarID).nombrelugar, value: formulario.LugarID } : null}
+            onChange={(option) => handleSelectChange(option, 'LugarID')}
             placeholder="Seleccionar lugar"
-            isClearable
           />
         </div>
 
-       <div>
-        <label>Chofer:</label>
-        <Select
-          options={choferes.map(c => ({
-            value: c.choferid,
-            label: c.nombre
-          }))}
-          value={choferes.find(c => c.choferid === parseInt(formulario.ChoferID)) ?
-                { value: formulario.ChoferID, label: choferes.find(c => c.choferid === parseInt(formulario.ChoferID))?.nombre } : null}
-          onChange={(selected) =>
-            setFormulario(prev => ({
-              ...prev,
-              ChoferID: selected?.value || ''
-            }))
-          }
-          styles={customStyles}
-          placeholder="Seleccionar chofer"
-          isClearable
-        />
-      </div>
+        <div>
+          <label>Chofer:</label>
+          <Select
+            options={choferes.map(c => ({ label: c.nombre, value: c.choferid }))}
+            value={choferes.find(c => c.choferid === formulario.ChoferID) ? { label: choferes.find(c => c.choferid === formulario.ChoferID).nombre, value: formulario.ChoferID } : null}
+            onChange={(option) => handleSelectChange(option, 'ChoferID')}
+            placeholder="Seleccionar chofer"
+          />
+        </div>
 
         <div className="md:col-span-2 text-right">
           <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded">Registrar Carga</button>
         </div>
       </form>
 
-      {mensaje && <p className="mt-4 text-green-700 font-medium">{mensaje}</p>}
+      {mensaje && <p className={`mt-4 font-medium ${mensaje.startsWith('✅') ? 'text-green-700' : 'text-red-700'}`}>{mensaje}</p>}
 
-      <div className="mt-6 p-4 bg-blue-400 rounded">
-        <p className="text-lg font-semibold text-white">Stock Actual</p>
-
-        <p className="text-lg font-bold text-black">{Number(stock).toLocaleString('es-PY',{
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,})} litros</p>
-      
+      <div className="mt-6 p-4 bg-blue-500 rounded text-white">
+        <p className="text-lg font-semibold">Stock Actual</p>
+        <p className="text-2xl font-mono">{stock.toLocaleString('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} litros</p>
       </div>
 
       <div className="mt-8">
@@ -290,20 +219,8 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
                 <td className="p-2 border">{formatearFechaHoraDDMMYYYY(a.fecha)}</td>
                 <td className="p-2 border">{a.vehiculo}</td>
                 <td className="p-2 border">{a.chofer}</td>
-
-                <td className="p-2 border text-right">
-                  {Number(a.cant_litros).toLocaleString('es-PY', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                </td>
-                
-                <td className="p-2 border text-right">
-                  {Number(a.kilometrajeactual).toLocaleString('es-PY', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
-                  </td>  
+                <td className="p-2 border text-right">{Number(a.cant_litros).toLocaleString('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td className="p-2 border text-right">{a.kilometrajeactual}</td>
                 <td className="p-2 border">{a.lugar}</td>
               </tr>
             ))}
@@ -315,6 +232,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 });
 
 export default AbastecimientoForm;
+
 
 
 

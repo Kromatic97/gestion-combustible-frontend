@@ -52,7 +52,7 @@ const NumericInputPad = ({ label, value, onChange }) => {
             <button
               key={key}
               onClick={() => handleKeyPress(key)}
-              className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600 text-sm font-semibold"
+              className="bg-gray-400 text-white py-2 rounded hover:bg-gray-600 text-sm font-semibold"
             >
               {key}
             </button>
