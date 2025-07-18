@@ -135,31 +135,40 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
         <div>
-          <label>Fecha:</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Fecha:</label>
           <DatePicker
             selected={formulario.Fecha ? new Date(formulario.Fecha) : null}
             onChange={(date) => setFormulario(prev => ({ ...prev, Fecha: date.toISOString() }))}
             locale="es"
             dateFormat="dd/MM/yyyy"
             placeholderText="Seleccionar fecha"
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 p-2 rounded h-[40px]"
           />
         </div>
 
         <div>
-          <label>Vehículo:</label>
-          <Select
-            name="VehiculoID"
-            value={vehiculos.find(v => v.vehiculoid === formulario.VehiculoID) ? {
-              value: formulario.VehiculoID,
-              label: vehiculos.find(v => v.vehiculoid === formulario.VehiculoID).denominacion
-            } : null}
-            onChange={handleSelectChange}
-            options={vehiculos.map(v => ({ value: v.vehiculoid, label: v.denominacion }))}
-            placeholder="Seleccionar vehículo"
-            isClearable
-          />
-        </div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Vehículo:</label>
+            <div className="min-h-[40px]">
+              <Select
+                name="VehiculoID"
+                value={vehiculos.find(v => v.vehiculoid === formulario.VehiculoID) ? {
+                  value: formulario.VehiculoID,
+                  label: vehiculos.find(v => v.vehiculoid === formulario.VehiculoID).denominacion
+                } : null}
+                onChange={handleSelectChange}
+                options={vehiculos.map(v => ({ value: v.vehiculoid, label: v.denominacion }))}
+                placeholder="Seleccionar vehículo"
+                isClearable
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    minHeight: '40px',
+                    borderColor: '#D1D5DB', // gray-300
+                  })
+                }}
+              />
+            </div>
+          </div>
 
         <div>
           <label>Kilometraje Actual:</label>
@@ -168,7 +177,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
             name="KilometrajeActual"
             value={formulario.KilometrajeActual}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 p-2 rounded h-[40px]"
           />
         </div>
 
@@ -179,9 +188,9 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
             name="CantLitros"
             value={formulario.CantLitros}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 p-2 rounded h-[40px]"
           />
-        </div>
+          </div>
 
         <div>
           <label>Lugar:</label>
