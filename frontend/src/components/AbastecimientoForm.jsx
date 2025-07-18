@@ -1,230 +1,253 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
-import axios from 'axios';
-import API_BASE_URL from '../config';
-import DatePicker, { registerLocale } from "react-datepicker";
+import { useState, useEffect } from "react";
+import DatePicker from "react-datepicker";
+import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
-import { es } from 'date-fns/locale';
-import NumericInputPad from './NumericInputPad'; // Asegúrate de tener este componente
+import axios from "axios";
+import NumericInputPad from "./NumericInputPad";
 
-registerLocale("es", es);
-
-const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
-  const [formulario, setFormulario] = useState({
-    Fecha: '',
-    VehiculoID: '',
-    KilometrajeActual: '',
-    CantLitros: '',
-    LugarID: '',
-    ChoferID: ''
-  });
-
+const AbastecimientoForm = () => {
+  const [fecha, setFecha] = useState(new Date());
+  const [vehiculo, setVehiculo] = useState(null);
+  const [chofer, setChofer] = useState(null);
+  const [lugar, setLugar] = useState(null);
+  const [kilometraje, setKilometraje] = useState("");
+  const [litros, setLitros] = useState("");
   const [vehiculos, setVehiculos] = useState([]);
   const [choferes, setChoferes] = useState([]);
   const [lugares, setLugares] = useState([]);
-  const [mensaje, setMensaje] = useState('');
-  const [stock, setStock] = useState(0);
-  const [abastecimientos, setAbastecimientos] = useState([]);
-
-  useImperativeHandle(ref, () => ({
-    cargarVehiculos,
-    cargarChoferes,
-    cargarStock,
-  }));
+  const [ultimos, setUltimos] = useState([]);
+  const [stockActual, setStockActual] = useState(0);
+  const [success, setSuccess] = useState(null);
+  const [showPad, setShowPad] = useState({ tipo: null });
 
   useEffect(() => {
-    cargarTodo();
+    axios.get("/api/vehiculos").then((res) => setVehiculos(res.data));
+    axios.get("/api/choferes").then((res) => setChoferes(res.data));
+    axios.get("/api/lugares").then((res) => setLugares(res.data));
+    obtenerStock();
+    obtenerUltimos();
   }, []);
 
-  const cargarTodo = async () => {
-    await Promise.all([
-      cargarVehiculos(),
-      cargarChoferes(),
-      cargarLugares(),
-      cargarStock(),
-      cargarAbastecimientos()
-    ]);
+  const obtenerStock = async () => {
+    const res = await axios.get("/api/stock");
+    setStockActual(Number(res.data.totalLitros || 0));
   };
 
-  const cargarVehiculos = async () => {
-    const res = await axios.get(`${API_BASE_URL}/api/vehiculos`);
-    setVehiculos(res.data);
+  const obtenerUltimos = async () => {
+    const res = await axios.get("/api/abastecimientos");
+    setUltimos(res.data);
   };
 
-  const cargarChoferes = async () => {
-    const res = await axios.get(`${API_BASE_URL}/api/choferes`);
-    setChoferes(res.data);
-  };
-
-  const cargarLugares = async () => {
-    const res = await axios.get(`${API_BASE_URL}/api/lugares`);
-    setLugares(res.data);
-  };
-
-  const cargarStock = async () => {
-    const res = await axios.get(`${API_BASE_URL}/api/stock`);
-    setStock(res.data.litroactual);
-  };
-
-  const cargarAbastecimientos = async () => {
-    const res = await axios.get(`${API_BASE_URL}/api/abastecimientos`);
-    setAbastecimientos(res.data);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormulario(prev => ({ ...prev, [name]: value }));
-
-    if (name === 'VehiculoID') {
-      const vehiculo = vehiculos.find(v => v.vehiculoid === parseInt(value));
-      if (vehiculo) {
-        setFormulario(prev => ({ ...prev, KilometrajeActual: vehiculo.kilometrajeodometro }));
-      }
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     try {
-      const datosEnviar = {
-        ...formulario,
-        KilometrajeActual: parseFloat(formulario.KilometrajeActual),
-        CantLitros: parseFloat(formulario.CantLitros),
+      const payload = {
+        fecha,
+        vehiculoid: vehiculo?.value,
+        choferid: chofer?.value,
+        lugarid: lugar?.value,
+        kilometraje: Number(kilometraje),
+        litros: Number(litros),
       };
 
-      await axios.post(`${API_BASE_URL}/api/abastecimientos`, datosEnviar);
-
-      setMensaje('✅ Abastecimiento registrado correctamente');
-      setFormulario({
-        Fecha: '',
-        VehiculoID: '',
-        KilometrajeActual: '',
-        CantLitros: '',
-        LugarID: '',
-        ChoferID: ''
-      });
-
-      await cargarStock();
-      await cargarAbastecimientos();
-
-      if (onAbastecimientoRegistrado) onAbastecimientoRegistrado();
-
+      await axios.post("/api/abastecimientos", payload);
+      setSuccess(true);
+      obtenerStock();
+      obtenerUltimos();
+      resetForm();
     } catch (error) {
-      console.error('Error al registrar abastecimiento:', error);
-      setMensaje('❌ Error al registrar el abastecimiento');
+      console.error(error);
+      setSuccess(false);
     }
   };
 
-  const formatearFechaHora = (fechaISO) => {
-    const fecha = new Date(fechaISO);
-    const dia = String(fecha.getDate()).padStart(2, '0');
-    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
-    const año = fecha.getFullYear();
-    const horas = String(fecha.getHours()).padStart(2, '0');
-    const minutos = String(fecha.getMinutes()).padStart(2, '0');
-    return `${dia}/${mes}/${año}, ${horas}:${minutos}`;
+  const resetForm = () => {
+    setVehiculo(null);
+    setChofer(null);
+    setLugar(null);
+    setKilometraje("");
+    setLitros("");
+  };
+
+  const formatDecimal = (num) =>
+    Number(num).toLocaleString("es-ES", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+  const handlePadClick = (value, tipo) => {
+    if (tipo === "kilometraje") {
+      setKilometraje((prev) =>
+        value === "C"
+          ? ""
+          : value === "←"
+          ? prev.slice(0, -1)
+          : prev + value
+      );
+    } else {
+      setLitros((prev) =>
+        value === "C"
+          ? ""
+          : value === "←"
+          ? prev.slice(0, -1)
+          : prev + value
+      );
+    }
+  };
+
+  const handleFocus = (tipo) => {
+    setShowPad({ tipo });
+  };
+
+  const handleBlur = () => {
+    setTimeout(() => {
+      setShowPad({ tipo: null });
+    }, 200); // delay para permitir click
+  };
+
+  const customStyles = {
+    control: (base) => ({
+      ...base,
+      backgroundColor: "#f8f9fa",
+      borderColor: "#ced4da",
+      minHeight: "38px",
+    }),
   };
 
   return (
-    <div className="bg-white p-6 rounded shadow max-w-6xl mx-auto">
+    <div className="p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-xl font-bold mb-4">Registrar Abastecimiento</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label>Fecha:</label>
           <DatePicker
-            selected={formulario.Fecha ? new Date(formulario.Fecha) : null}
-            onChange={(date) => setFormulario(prev => ({ ...prev, Fecha: date.toISOString() }))}
-            locale="es"
+            selected={fecha}
+            onChange={(date) => setFecha(date)}
             dateFormat="dd/MM/yyyy"
-            placeholderText="Seleccionar fecha"
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 rounded px-2 py-1"
           />
         </div>
 
         <div>
           <label>Vehículo:</label>
-          <select name="VehiculoID" value={formulario.VehiculoID} onChange={handleChange} required className="w-full border p-2 rounded">
-            <option value="">Seleccionar vehículo</option>
-            {vehiculos.map(v => (
-              <option key={v.vehiculoid} value={v.vehiculoid}>{v.denominacion}</option>
-            ))}
-          </select>
+          <Select
+            value={vehiculo}
+            onChange={setVehiculo}
+            options={vehiculos.map((v) => ({
+              value: v.vehiculoid,
+              label: v.denominacion,
+            }))}
+            styles={customStyles}
+            placeholder="Seleccionar vehículo"
+          />
         </div>
 
-        <div>
+        <div className="relative">
           <label>Kilometraje Actual:</label>
-          <NumericInputPad
-            value={formulario.KilometrajeActual}
-            onChange={(val) => setFormulario(prev => ({ ...prev, KilometrajeActual: val }))}
+          <input
+            type="text"
+            value={kilometraje}
+            onFocus={() => handleFocus("kilometraje")}
+            onBlur={handleBlur}
+            readOnly
+            className="w-full border border-gray-300 rounded px-2 py-1"
           />
+          {showPad.tipo === "kilometraje" && (
+            <NumericInputPad
+              onClick={(val) => handlePadClick(val, "kilometraje")}
+            />
+          )}
         </div>
 
-        <div>
+        <div className="relative">
           <label>Cantidad de Litros:</label>
-          <NumericInputPad
-            value={formulario.CantLitros}
-            onChange={(val) => setFormulario(prev => ({ ...prev, CantLitros: val }))}
+          <input
+            type="text"
+            value={litros}
+            onFocus={() => handleFocus("litros")}
+            onBlur={handleBlur}
+            readOnly
+            className="w-full border border-gray-300 rounded px-2 py-1"
           />
+          {showPad.tipo === "litros" && (
+            <NumericInputPad
+              onClick={(val) => handlePadClick(val, "litros")}
+            />
+          )}
         </div>
 
         <div>
           <label>Lugar:</label>
-          <select name="LugarID" value={formulario.LugarID} onChange={handleChange} required className="w-full border p-2 rounded">
-            <option value="">Seleccionar lugar</option>
-            {lugares.map(l => (
-              <option key={l.lugarid} value={l.lugarid}>{l.nombrelugar}</option>
-            ))}
-          </select>
+          <Select
+            value={lugar}
+            onChange={setLugar}
+            options={lugares.map((l) => ({
+              value: l.lugarid,
+              label: l.nombre,
+            }))}
+            styles={customStyles}
+            placeholder="Seleccionar lugar"
+          />
         </div>
 
         <div>
           <label>Chofer:</label>
-          <select name="ChoferID" value={formulario.ChoferID} onChange={handleChange} required className="w-full border p-2 rounded">
-            <option value="">Seleccionar chofer</option>
-            {choferes.map(c => (
-              <option key={c.choferid} value={c.choferid}>{c.nombre}</option>
-            ))}
-          </select>
+          <Select
+            value={chofer}
+            onChange={setChofer}
+            options={choferes.map((c) => ({
+              value: c.choferid,
+              label: c.nombre,
+            }))}
+            styles={customStyles}
+            placeholder="Seleccionar chofer"
+          />
         </div>
-
-        <div className="md:col-span-2 text-right">
-          <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded">Registrar Carga</button>
-        </div>
-      </form>
-
-      {mensaje && (
-        <p className={`mt-4 font-medium ${mensaje.includes('Error') ? 'text-red-600' : 'text-green-700'}`}>
-          {mensaje}
-        </p>
-      )}
-
-      <div className="mt-6 p-4 bg-blue-500 rounded text-white">
-        <p className="text-lg font-semibold">Stock Actual</p>
-        <p className="text-2xl font-mono">{stock.toLocaleString('es-PY', { minimumFractionDigits: 2 })} litros</p>
       </div>
 
-      <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-2">Últimos abastecimientos</h3>
-        <table className="w-full border text-sm bg-white">
+      <div className="mt-4">
+        <button
+          onClick={handleSubmit}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+        >
+          Registrar Carga
+        </button>
+      </div>
+
+      {success === true && (
+        <p className="text-green-600 mt-2">✔ Abastecimiento registrado correctamente</p>
+      )}
+      {success === false && (
+        <p className="text-red-600 mt-2">❌ Error al registrar el abastecimiento</p>
+      )}
+
+      <div className="mt-6 bg-blue-500 text-white p-4 rounded">
+        <p className="font-bold">Stock Actual</p>
+        <p className="text-lg">{formatDecimal(stockActual)} litros</p>
+      </div>
+
+      <div className="mt-6">
+        <h3 className="font-semibold mb-2">Últimos abastecimientos</h3>
+        <table className="w-full border text-sm">
           <thead className="bg-gray-200">
             <tr>
-              <th className="p-2 border">Fecha</th>
-              <th className="p-2 border">Vehículo</th>
-              <th className="p-2 border">Chofer</th>
-              <th className="p-2 border">Litros</th>
-              <th className="p-2 border">Kilometraje</th>
-              <th className="p-2 border">Lugar</th>
+              <th className="border px-2 py-1">Fecha</th>
+              <th className="border px-2 py-1">Vehículo</th>
+              <th className="border px-2 py-1">Chofer</th>
+              <th className="border px-2 py-1">Litros</th>
+              <th className="border px-2 py-1">Kilometraje</th>
+              <th className="border px-2 py-1">Lugar</th>
             </tr>
           </thead>
           <tbody>
-            {abastecimientos.map((a) => (
-              <tr key={a.abastecimientoid}>
-                <td className="p-2 border">{formatearFechaHora(a.fecha)}</td>
-                <td className="p-2 border">{a.vehiculo}</td>
-                <td className="p-2 border">{a.chofer}</td>
-                <td className="p-2 border text-right">{parseFloat(a.cant_litros).toLocaleString('es-PY', { minimumFractionDigits: 2 })}</td>
-                <td className="p-2 border text-right">{a.kilometrajeactual}</td>
-                <td className="p-2 border">{a.lugar}</td>
+            {ultimos.map((ab, idx) => (
+              <tr key={idx}>
+                <td className="border px-2 py-1">{new Date(ab.fecha).toLocaleString()}</td>
+                <td className="border px-2 py-1">{ab.vehiculo}</td>
+                <td className="border px-2 py-1">{ab.chofer}</td>
+                <td className="border px-2 py-1">{formatDecimal(ab.litros)}</td>
+                <td className="border px-2 py-1">{formatDecimal(ab.kilometraje)}</td>
+                <td className="border px-2 py-1">{ab.lugar}</td>
               </tr>
             ))}
           </tbody>
@@ -232,9 +255,10 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
       </div>
     </div>
   );
-});
+};
 
 export default AbastecimientoForm;
+
 
 
 
