@@ -233,10 +233,17 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
         </p>
       )}
 
-      <div className="mt-6 p-4 bg-blue-500 rounded text-white">
-        <p className="text-lg font-semibold">Stock Actual</p>
-        <p className="text-2xl font-mono">{parseFloat(stock).toLocaleString('es-PY', { minimumFractionDigits: 2, maximusFractionDigits: 2 })} litros</p>
-      </div>
+      <div className="flex justify-center mt-6">
+        <div className="bg-blue-600 text-white px-6 py-4 rounded-lg shadow-lg text-center w-full max-w-md">
+          <h3 className="text-lg font-semibold">Stock Actual</h3>
+          <p className="text-2xl font-bold tracking-wider mt-1">
+            {parseFloat(stockActual).toLocaleString('es-PY', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })} <span className="text-base font-medium">litros</span>
+          </p>
+        </div>
+    </div>
 
       <div className="mt-8">
         <h3 className="text-lg font-semibold mb-4 text-blue-800">Últimos abastecimientos</h3>
