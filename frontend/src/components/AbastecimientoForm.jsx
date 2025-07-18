@@ -5,6 +5,8 @@ import API_BASE_URL from '../config';
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { es } from 'date-fns/locale';
+import NumericInputPad from './NumericInputPad';
+
 
 registerLocale("es", es);
 const customStyles = {
@@ -194,15 +196,22 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
           />
         </div>
 
-        <div>
-          <label>Kilometraje Actual:</label>
-          <input type="number" name="KilometrajeActual" value={formulario.KilometrajeActual} onChange={handleChange} required className="w-full border p-2 rounded" />
-        </div>
+        <NumericInputPad
+          label="Kilometraje Actual"
+          value={formulario.KilometrajeActual}
+          onChange={(val) =>
+          setFormulario((prev) => ({ ...prev, KilometrajeActual: val }))
+          }
+          />
 
-        <div>
-          <label>Cantidad de Litros:</label>
-          <input type="number" name="CantLitros" value={formulario.CantLitros} onChange={handleChange} required className="w-full border p-2 rounded" />
-        </div>
+
+       <NumericInputPad
+        label="Cantidad de Litros"
+        value={formulario.CantLitros}
+        onChange={(val) =>
+          setFormulario((prev) => ({ ...prev, CantLitros: val }))
+        }
+        />
 
         <div>
           <label>Lugar:</label>
