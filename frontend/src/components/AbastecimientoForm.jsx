@@ -238,7 +238,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
       <div className="mt-6 p-4 bg-blue-500 rounded text-white">
         <p className="text-lg font-semibold">Stock Actual</p>
-        <p className="text-2xl font-mono">{stock.toLocaleString('es-PY', { minimumFractionDigits: 2 })} litros</p>
+        <p className="text-2xl font-mono">{stock.toLocaleString('es-PY', { minimumFractionDigits: 2, maximumFractionDigits:2 })} litros</p>
       </div>
 
       <div className="mt-8">
@@ -260,8 +260,8 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
                 <td className="p-2 border">{formatearFechaHora(a.fecha)}</td>
                 <td className="p-2 border">{a.vehiculo}</td>
                 <td className="p-2 border">{a.chofer}</td>
-                <td className="p-2 border text-right">{parseFloat(a.cant_litros).toLocaleString('es-PY', { minimumFractionDigits: 2 })}</td>
-                <td className="p-2 border text-right">{a.kilometrajeactual}</td>
+                <td className="p-2 border text-right">{parseFloat(a.cant_litros).toLocaleString('es-PY', { minimumFractionDigits: 2, maximumFractionDigits:2 })}</td>
+                <td className="p-2 border text-right">{parseFloat(a.kilometrajeactual).toLocaleString('es-PY', { minimumFractionDigits: 2, maximumFractionDigits:2 })}</td>
                 <td className="p-2 border">{a.lugar}</td>
               </tr>
             ))}
