@@ -4,7 +4,6 @@ import API_BASE_URL from '../config';
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { es } from 'date-fns/locale';
-import NumericInputPad from './NumericInputPad';
 import Select from 'react-select';
 
 registerLocale("es", es);
@@ -83,11 +82,9 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
     }
   };
 
-  const parseDecimal = (str) => {
-    if (typeof str === 'string') {
-      return parseFloat(str.replace(/\./g, '').replace(',', '.'));
-    }
-    return str;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormulario(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -95,8 +92,8 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
     try {
       const datosEnviar = {
         ...formulario,
-        KilometrajeActual: parseDecimal(formulario.KilometrajeActual),
-        CantLitros: parseDecimal(formulario.CantLitros),
+        KilometrajeActual: parseFloat(formulario.KilometrajeActual),
+        CantLitros: parseFloat(formulario.CantLitros),
       };
 
       await axios.post(`${API_BASE_URL}/api/abastecimientos`, datosEnviar);
@@ -166,17 +163,23 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
         <div>
           <label>Kilometraje Actual:</label>
-          <NumericInputPad
+          <input
+            type="number"
+            name="KilometrajeActual"
             value={formulario.KilometrajeActual}
-            onChange={(val) => setFormulario(prev => ({ ...prev, KilometrajeActual: val }))}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
           />
         </div>
 
         <div>
           <label>Cantidad de Litros:</label>
-          <NumericInputPad
+          <input
+            type="number"
+            name="CantLitros"
             value={formulario.CantLitros}
-            onChange={(val) => setFormulario(prev => ({ ...prev, CantLitros: val }))}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
           />
         </div>
 
@@ -258,6 +261,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 });
 
 export default AbastecimientoForm;
+
 
 
 
