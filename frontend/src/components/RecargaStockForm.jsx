@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import API_BASE_URL from '../config';
 import { CheckCircle } from 'lucide-react';
+import Select from 'react-select';
 
 const RecargaStockForm = ({ abastecimientoFormRef }) => {
   const [formulario, setFormulario] = useState({
@@ -81,23 +82,37 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
             />
           </div>
 
+          
+          
           <div>
             <label className="block">Chofer:</label>
-            <select
+            <Select
               name="ChoferID"
-              value={formulario.ChoferID}
-              onChange={handleChange}
-              required
-              className="w-full border p-2 rounded"
-            >
-              <option value="">Seleccionar chofer</option>
-              {choferes.map(c => (
-                <option key={c.choferid} value={c.choferid}>
-                  {c.nombre}
-                </option>
-              ))}
-            </select>
+              value={
+                choferes.find(c => c.choferid === formulario.ChoferID)
+                  ? {
+                      value: formulario.ChoferID,
+                      label: choferes.find(c => c.choferid === formulario.ChoferID).nombre
+                    }
+                  : null
+              }
+              onChange={(selectedOption) =>
+                setFormulario(prev => ({
+                  ...prev,
+                  ChoferID: selectedOption ? selectedOption.value : ''
+                }))
+              }
+              options={choferes.map(c => ({
+                value: c.choferid,
+                label: c.nombre
+              }))}
+              placeholder="Seleccionar chofer"
+              isClearable
+            />
           </div>
+
+
+
 
           <div className="text-right">
             <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
