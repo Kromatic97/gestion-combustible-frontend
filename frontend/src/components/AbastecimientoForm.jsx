@@ -4,7 +4,6 @@ import API_BASE_URL from '../config';
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { es } from 'date-fns/locale';
-import Select from 'react-select';
 import NumericInputPad from './NumericInputPad'; // Asegúrate de tener este componente
 
 registerLocale("es", es);
@@ -71,19 +70,14 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
     setAbastecimientos(res.data);
   };
 
-  const handleSelectChange = (selectedOption, name) => {
-    setFormulario(prev => ({
-      ...prev,
-      [name]: selectedOption ? selectedOption.value : ''
-    }));
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormulario(prev => ({ ...prev, [name]: value }));
 
     if (name === 'VehiculoID') {
-      const vehiculo = vehiculos.find(v => v.vehiculoid === selectedOption.value);
+      const vehiculo = vehiculos.find(v => v.vehiculoid === parseInt(value));
       if (vehiculo) {
-        setFormulario(prev => ({
-          ...prev,
-          KilometrajeActual: vehiculo.kilometrajeodometro
-        }));
+        setFormulario(prev => ({ ...prev, KilometrajeActual: vehiculo.kilometrajeodometro }));
       }
     }
   };
@@ -91,9 +85,15 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API_BASE_URL}/api/abastecimientos`, formulario);
-      setMensaje('✅ Abastecimiento registrado correctamente');
+      const datosEnviar = {
+        ...formulario,
+        KilometrajeActual: parseFloat(formulario.KilometrajeActual),
+        CantLitros: parseFloat(formulario.CantLitros),
+      };
 
+      await axios.post(`${API_BASE_URL}/api/abastecimientos`, datosEnviar);
+
+      setMensaje('✅ Abastecimiento registrado correctamente');
       setFormulario({
         Fecha: '',
         VehiculoID: '',
@@ -105,6 +105,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
       await cargarStock();
       await cargarAbastecimientos();
+
       if (onAbastecimientoRegistrado) onAbastecimientoRegistrado();
 
     } catch (error) {
@@ -113,7 +114,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
     }
   };
 
-  const formatearFechaHoraDDMMYYYY = (fechaISO) => {
+  const formatearFechaHora = (fechaISO) => {
     const fecha = new Date(fechaISO);
     const dia = String(fecha.getDate()).padStart(2, '0');
     const mes = String(fecha.getMonth() + 1).padStart(2, '0');
@@ -142,61 +143,48 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
         <div>
           <label>Vehículo:</label>
-          <Select
-            options={vehiculos.map(v => ({ label: v.denominacion, value: v.vehiculoid }))}
-            value={vehiculos.find(v => v.vehiculoid === formulario.VehiculoID) ? { label: vehiculos.find(v => v.vehiculoid === formulario.VehiculoID).denominacion, value: formulario.VehiculoID } : null}
-            onChange={(option) => handleSelectChange(option, 'VehiculoID')}
-            placeholder="Seleccionar vehículo"
-          />
+          <select name="VehiculoID" value={formulario.VehiculoID} onChange={handleChange} required className="w-full border p-2 rounded">
+            <option value="">Seleccionar vehículo</option>
+            {vehiculos.map(v => (
+              <option key={v.vehiculoid} value={v.vehiculoid}>{v.denominacion}</option>
+            ))}
+          </select>
         </div>
 
         <div>
           <label>Kilometraje Actual:</label>
           <NumericInputPad
             value={formulario.KilometrajeActual}
-            onChange={(value) =>
-              setFormulario(prev => ({
-                ...prev,
-                KilometrajeActual: value === '' ? '' : parseFloat(value)
-              }))
-            }
-            placeholder="Ingrese kilometraje"
+            onChange={(val) => setFormulario(prev => ({ ...prev, KilometrajeActual: val }))}
           />
-
         </div>
 
         <div>
           <label>Cantidad de Litros:</label>
           <NumericInputPad
             value={formulario.CantLitros}
-            onChange={(value) =>
-              setFormulario(prev => ({
-                ...prev,
-                CantLitros: value === '' ? '' : parseFloat(value)
-              }))
-            }
-            placeholder="Ingrese litros"
+            onChange={(val) => setFormulario(prev => ({ ...prev, CantLitros: val }))}
           />
         </div>
 
         <div>
           <label>Lugar:</label>
-          <Select
-            options={lugares.map(l => ({ label: l.nombrelugar, value: l.lugarid }))}
-            value={lugares.find(l => l.lugarid === formulario.LugarID) ? { label: lugares.find(l => l.lugarid === formulario.LugarID).nombrelugar, value: formulario.LugarID } : null}
-            onChange={(option) => handleSelectChange(option, 'LugarID')}
-            placeholder="Seleccionar lugar"
-          />
+          <select name="LugarID" value={formulario.LugarID} onChange={handleChange} required className="w-full border p-2 rounded">
+            <option value="">Seleccionar lugar</option>
+            {lugares.map(l => (
+              <option key={l.lugarid} value={l.lugarid}>{l.nombrelugar}</option>
+            ))}
+          </select>
         </div>
 
         <div>
           <label>Chofer:</label>
-          <Select
-            options={choferes.map(c => ({ label: c.nombre, value: c.choferid }))}
-            value={choferes.find(c => c.choferid === formulario.ChoferID) ? { label: choferes.find(c => c.choferid === formulario.ChoferID).nombre, value: formulario.ChoferID } : null}
-            onChange={(option) => handleSelectChange(option, 'ChoferID')}
-            placeholder="Seleccionar chofer"
-          />
+          <select name="ChoferID" value={formulario.ChoferID} onChange={handleChange} required className="w-full border p-2 rounded">
+            <option value="">Seleccionar chofer</option>
+            {choferes.map(c => (
+              <option key={c.choferid} value={c.choferid}>{c.nombre}</option>
+            ))}
+          </select>
         </div>
 
         <div className="md:col-span-2 text-right">
@@ -204,11 +192,15 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
         </div>
       </form>
 
-      {mensaje && <p className={`mt-4 font-medium ${mensaje.startsWith('✅') ? 'text-green-700' : 'text-red-700'}`}>{mensaje}</p>}
+      {mensaje && (
+        <p className={`mt-4 font-medium ${mensaje.includes('Error') ? 'text-red-600' : 'text-green-700'}`}>
+          {mensaje}
+        </p>
+      )}
 
       <div className="mt-6 p-4 bg-blue-500 rounded text-white">
         <p className="text-lg font-semibold">Stock Actual</p>
-        <p className="text-2xl font-mono">{stock.toLocaleString('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} litros</p>
+        <p className="text-2xl font-mono">{stock.toLocaleString('es-PY', { minimumFractionDigits: 2 })} litros</p>
       </div>
 
       <div className="mt-8">
@@ -227,10 +219,10 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
           <tbody>
             {abastecimientos.map((a) => (
               <tr key={a.abastecimientoid}>
-                <td className="p-2 border">{formatearFechaHoraDDMMYYYY(a.fecha)}</td>
+                <td className="p-2 border">{formatearFechaHora(a.fecha)}</td>
                 <td className="p-2 border">{a.vehiculo}</td>
                 <td className="p-2 border">{a.chofer}</td>
-                <td className="p-2 border text-right">{Number(a.cant_litros).toLocaleString('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td className="p-2 border text-right">{parseFloat(a.cant_litros).toLocaleString('es-PY', { minimumFractionDigits: 2 })}</td>
                 <td className="p-2 border text-right">{a.kilometrajeactual}</td>
                 <td className="p-2 border">{a.lugar}</td>
               </tr>
@@ -243,6 +235,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 });
 
 export default AbastecimientoForm;
+
 
 
 

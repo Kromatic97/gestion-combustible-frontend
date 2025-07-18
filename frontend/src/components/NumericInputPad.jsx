@@ -15,7 +15,7 @@ const NumericInputPad = ({ label, value, onChange }) => {
     }
   };
 
-  const keys = ['7', '8', '9', '4', '5', '6', '1', '2', '3', '0', ',', '←', 'C'];
+  const keys = ['7', '8', '9', '4', '5', '6', '1', '2', '3', '0', '.', '←', 'C'];
 
   // Cerrar el pad al hacer clic fuera
   useEffect(() => {
