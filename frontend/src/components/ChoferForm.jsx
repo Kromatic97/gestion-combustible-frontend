@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import API_BASE_URL from '../config';
 import { CheckCircle } from 'lucide-react';
 
+
 function ChoferForm() {
   const [nombre, setNombre] = useState('');
   const [modalAbierto, setModalAbierto] = useState(false);
@@ -33,15 +34,17 @@ function ChoferForm() {
         <h2 className="text-2xl font-bold mb-4 text-center text-blue-800">Registrar Chofer</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block font-semibold">Nombre del Chofer:</label>
-            <input
-              type="text"
-              value={nombre}
-              onChange={(e) => setNombre(e.target.value)}
-              required
-              className="w-full border p-2 rounded"
-            />
-          </div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nombre del Chofer:</label>
+              <input
+                type="text"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                required
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                placeholder="Ej. Juan Gómez"
+              />
+            </div>
+
 
           <button
             type="submit"
