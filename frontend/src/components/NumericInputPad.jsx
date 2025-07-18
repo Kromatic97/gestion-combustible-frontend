@@ -1,52 +1,73 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 const NumericInputPad = ({ value, onChange }) => {
-  const handleClick = (val) => {
-    if (val === 'C') {
+  const [showPad, setShowPad] = useState(false);
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setShowPad(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleInputClick = () => {
+    setShowPad(true);
+  };
+
+  const handleButtonClick = (char) => {
+    if (char === 'C') {
       onChange('');
-    } else if (val === '←') {
+    } else if (char === '←') {
       onChange(value.slice(0, -1));
-    } else if (val === '.' && value.includes('.')) {
-      return;
     } else {
-      onChange(value + val);
+      onChange(value + char);
     }
   };
 
-  const keys = [
-    ['7', '8', '9'],
-    ['4', '5', '6'],
-    ['1', '2', '3'],
-    ['0', '.', '←'],
-    ['C']
-  ];
-
   return (
-    <div className="inline-block">
+    <div className="relative" ref={wrapperRef}>
       <input
         type="text"
+        className="w-full border p-2 rounded"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full p-2 border border-gray-300 rounded mb-2 text-right"
+        onClick={handleInputClick}
+        readOnly
       />
-      <div className="grid grid-cols-3 gap-2 bg-gray-100 p-3 rounded shadow-md w-48">
-        {keys.flat().map((key, idx) => (
+      {showPad && (
+        <div className="absolute z-10 mt-2 bg-white p-2 rounded shadow grid grid-cols-3 gap-2 w-40">
+          {[...'7894561230.-'].map(char => (
+            <button
+              key={char}
+              onClick={() => handleButtonClick(char)}
+              className="p-2 bg-gray-100 hover:bg-gray-300 rounded text-center"
+            >
+              {char}
+            </button>
+          ))}
           <button
-            key={idx}
-            onClick={() => handleClick(key)}
-            className={`p-2 rounded text-gray-800 font-semibold border border-gray-300 hover:bg-gray-300 transition ${
-              key === 'C' ? 'col-span-3 bg-red-100 hover:bg-red-300' : 'bg-white'
-            }`}
+            onClick={() => handleButtonClick('←')}
+            className="p-2 bg-gray-100 hover:bg-gray-300 rounded text-center"
           >
-            {key}
+            ←
           </button>
-        ))}
-      </div>
+          <button
+            onClick={() => handleButtonClick('C')}
+            className="p-2 bg-red-100 hover:bg-red-300 rounded col-span-2 text-center"
+          >
+            C
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
 export default NumericInputPad;
+
 
 
 
