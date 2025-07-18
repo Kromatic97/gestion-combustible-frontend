@@ -1,58 +1,76 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 const NumericInputPad = ({ value, onChange }) => {
-  const [isFocused, setIsFocused] = useState(false);
-  const containerRef = useRef(null);
+  const [showPad, setShowPad] = useState(false);
+  const inputRef = useRef(null);
+  const padRef = useRef(null);
 
-  const handleClick = (char) => {
-    if (char === 'C') {
+  const handleButtonClick = (val) => {
+    if (val === 'C') {
       onChange('');
-    } else if (char === '←') {
-      onChange(value.slice(0, -1));
+    } else if (val === '←') {
+      onChange(value.toString().slice(0, -1));
     } else {
-      onChange(value + char);
+      onChange((value || '').toString() + val);
     }
   };
 
-  const buttons = [
-    ['7', '8', '9'],
-    ['4', '5', '6'],
-    ['1', '2', '3'],
-    ['0', '.', '←'],
-    ['C']
-  ];
-
-  const handleBlur = () => {
-    // Espera breve para permitir clic en el pad antes de ocultarlo
-    setTimeout(() => setIsFocused(false), 200);
+  const formatNumber = (val) => {
+    const number = parseFloat(val);
+    return isNaN(number)
+      ? ''
+      : number.toLocaleString('es-PY', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
   };
 
+  const handleClickOutside = (event) => {
+    if (
+      inputRef.current &&
+      !inputRef.current.contains(event.target) &&
+      padRef.current &&
+      !padRef.current.contains(event.target)
+    ) {
+      setShowPad(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
-    <div ref={containerRef} className="relative">
+    <div className="relative">
       <input
+        ref={inputRef}
         type="text"
-        value={value}
-        onFocus={() => setIsFocused(true)}
-        onBlur={handleBlur}
+        value={formatNumber(value)}
+        onFocus={() => setShowPad(true)}
         readOnly
-        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-right"
+        className="w-full border p-2 rounded text-right font-mono"
       />
-      {isFocused && (
-        <div className="absolute z-10 bg-white border rounded shadow-md mt-1 grid grid-cols-3 gap-1 p-2 w-48">
-          {buttons.flat().map((char, index) => (
+      {showPad && (
+        <div
+          ref={padRef}
+          className="absolute z-10 bg-white border rounded shadow-md grid grid-cols-3 gap-1 p-2 mt-1 w-40"
+        >
+          {['7', '8', '9', '4', '5', '6', '1', '2', '3', '0', '.', '←'].map((val) => (
             <button
-              key={index}
-              type="button"
-              className={`py-2 rounded text-sm font-medium 
-                ${char === 'C'
-                  ? 'bg-red-100 hover:bg-red-200 text-red-700 col-span-3'
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-800'}
-              `}
-              onClick={() => handleClick(char)}
+              key={val}
+              onClick={() => handleButtonClick(val)}
+              className="p-2 bg-gray-100 hover:bg-gray-300 rounded text-center text-lg font-medium"
             >
-              {char}
+              {val}
             </button>
           ))}
+          <button
+            onClick={() => handleButtonClick('C')}
+            className="col-span-3 p-2 bg-red-100 hover:bg-red-300 rounded text-center font-semibold"
+          >
+            C
+          </button>
         </div>
       )}
     </div>
@@ -60,6 +78,7 @@ const NumericInputPad = ({ value, onChange }) => {
 };
 
 export default NumericInputPad;
+
 
 
 
