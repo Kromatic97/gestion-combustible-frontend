@@ -90,55 +90,59 @@ const HistorialFiltrado = () => {
         </button>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border text-sm">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="border p-2">Fecha</th>
-              <th className="border p-2">Tipo</th>
-              <th className="border p-2">Vehículo</th>
-              <th className="border p-2 text-right">Odómetro</th>
-              <th className="border p-2">Chofer</th>
-              <th className="border p-2 text-right">Entrada (L)</th>
-              <th className="border p-2 text-right">Salida (L)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <tr key={index}>
-                <td className="border p-2">
-                  {item.fechatransaccion
-                    ? new Date(item.fechatransaccion).toLocaleString()
-                    : '-'}
-                </td>
-                <td className="border p-2">{item.tipo}</td>
-                <td className="border p-2">{item.vehiculo || '-'}</td>
-                <td className="border p-2 text-right">
-                  {item.kilometraje ? item.kilometraje.toLocaleString('es-ES') : '-'}
-                </td>
-                <td className="border p-2">{item.chofer}</td>
-                <td className="border p-2 text-right">
-                  {item.litrosentrada > 0 ? formatearNumero(item.litrosentrada) : '-'}
-                </td>
-                <td className="border p-2 text-right">
-                  {item.litrossalida > 0 ? formatearNumero(item.litrossalida) : '-'}
-                </td>
-              </tr>
-            ))}
-            {data.length > 0 && (
-              <tr className="bg-blue-50 font-semibold">
-                <td colSpan="5" className="text-right pr-2">Totales:</td>
-                <td className="border p-2 text-right text-green-700">
-                  {formatearNumero(totales.entrada)}
-                </td>
-                <td className="border p-2 text-right text-red-700">
-                  {formatearNumero(totales.salida)}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+          <div className="overflow-x-auto rounded-lg shadow border border-gray-200 mt-6">
+                <table className="min-w-full bg-white divide-y divide-gray-100 text-sm">
+                  <thead className="bg-gray-100 text-gray-700">
+                    <tr>
+                      <th className="px-4 py-2 text-left font-semibold">Fecha</th>
+                      <th className="px-4 py-2 text-left font-semibold">Tipo</th>
+                      <th className="px-4 py-2 text-left font-semibold">Vehículo</th>
+                      <th className="px-4 py-2 text-right font-semibold">Odómetro</th>
+                      <th className="px-4 py-2 text-left font-semibold">Chofer</th>
+                      <th className="px-4 py-2 text-right font-semibold">Entrada (L)</th>
+                      <th className="px-4 py-2 text-right font-semibold">Salida (L)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.map((item, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="px-4 py-2 text-gray-700">
+                          {item.fechatransaccion
+                            ? new Date(item.fechatransaccion).toLocaleString()
+                            : '-'}
+                        </td>
+                        <td className="px-4 py-2 text-gray-700">{item.tipo}</td>
+                        <td className="px-4 py-2 text-gray-700">{item.vehiculo || '-'}</td>
+                        <td className="px-4 py-2 text-right text-gray-700">
+                          {item.kilometraje ? item.kilometraje.toLocaleString('es-ES') : '-'}
+                        </td>
+                        <td className="px-4 py-2 text-gray-700">{item.chofer}</td>
+                        <td className="px-4 py-2 text-right text-green-700">
+                          {item.litrosentrada > 0 ? formatearNumero(item.litrosentrada) : '-'}
+                        </td>
+                        <td className="px-4 py-2 text-right text-red-700">
+                          {item.litrossalida > 0 ? formatearNumero(item.litrossalida) : '-'}
+                        </td>
+                      </tr>
+                    ))}
+
+                    {data.length > 0 && (
+                      <tr className="bg-blue-50 font-semibold">
+                        <td colSpan="5" className="px-4 py-2 text-right text-gray-700">Totales:</td>
+                        <td className="px-4 py-2 text-right text-green-700">
+                          {formatearNumero(totales.entrada)}
+                        </td>
+                        <td className="px-4 py-2 text-right text-red-700">
+                          {formatearNumero(totales.salida)}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+        </div>
+
+
+
     </div>
   );
 };
