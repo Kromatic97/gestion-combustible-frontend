@@ -86,7 +86,7 @@ const VehiculoForm = () => {
           </select>
         </div>
         <div>
-          <label>Denominación (Patente):</label>
+          <label>Denominación:</label>
           <input type="text" name="denominacion" value={formulario.denominacion} onChange={handleChange} className="w-full border p-2 rounded" required />
         </div>
         <div>
