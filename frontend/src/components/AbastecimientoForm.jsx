@@ -83,13 +83,20 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
     }
   };
 
+  const parseDecimal = (str) => {
+    if (typeof str === 'string') {
+      return parseFloat(str.replace(/\./g, '').replace(',', '.'));
+    }
+    return str;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const datosEnviar = {
         ...formulario,
-        KilometrajeActual: parseFloat(formulario.KilometrajeActual),
-        CantLitros: parseFloat(formulario.CantLitros),
+        KilometrajeActual: parseDecimal(formulario.KilometrajeActual),
+        CantLitros: parseDecimal(formulario.CantLitros),
       };
 
       await axios.post(`${API_BASE_URL}/api/abastecimientos`, datosEnviar);
@@ -251,7 +258,6 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 });
 
 export default AbastecimientoForm;
-
 
 
 
