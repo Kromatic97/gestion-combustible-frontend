@@ -141,15 +141,31 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
           />
         </div>
 
-        <div>
+       <div>
           <label>Vehículo:</label>
-          <select name="VehiculoID" value={formulario.VehiculoID} onChange={handleChange} required className="w-full border p-2 rounded">
-            <option value="">Seleccionar vehículo</option>
-            {vehiculos.map(v => (
-              <option key={v.vehiculoid} value={v.vehiculoid}>{v.denominacion}</option>
-            ))}
-          </select>
+          <Select
+            options={vehiculos.map(v => ({
+              value: v.vehiculoid,
+              label: v.denominacion
+            }))}
+            value={vehiculos.find(v => v.vehiculoid === parseInt(formulario.VehiculoID)) ? {
+              value: formulario.VehiculoID,
+              label: vehiculos.find(v => v.vehiculoid === parseInt(formulario.VehiculoID))?.denominacion
+            } : null}
+            onChange={(selected) => {
+              const vehiculoSeleccionado = vehiculos.find(v => v.vehiculoid === selected.value);
+              setFormulario(prev => ({
+                ...prev,
+                VehiculoID: selected.value,
+                KilometrajeActual: vehiculoSeleccionado?.kilometrajeodometro || ''
+              }));
+            }}
+            placeholder="Seleccionar vehículo"
+            className="react-select-container"
+            classNamePrefix="react-select"
+          />
         </div>
+
 
         <div>
           <label>Kilometraje Actual:</label>
@@ -169,23 +185,45 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
         <div>
           <label>Lugar:</label>
-          <select name="LugarID" value={formulario.LugarID} onChange={handleChange} required className="w-full border p-2 rounded">
-            <option value="">Seleccionar lugar</option>
-            {lugares.map(l => (
-              <option key={l.lugarid} value={l.lugarid}>{l.nombrelugar}</option>
-            ))}
-          </select>
+          <Select
+            options={lugares.map(l => ({
+              value: l.lugarid,
+              label: l.nombrelugar
+            }))}
+            value={lugares.find(l => l.lugarid === parseInt(formulario.LugarID)) ? {
+              value: formulario.LugarID,
+              label: lugares.find(l => l.lugarid === parseInt(formulario.LugarID))?.nombrelugar
+            } : null}
+            onChange={(selected) =>
+              setFormulario(prev => ({ ...prev, LugarID: selected.value }))
+            }
+            placeholder="Seleccionar lugar"
+            className="react-select-container"
+            classNamePrefix="react-select"
+          />
         </div>
+
 
         <div>
           <label>Chofer:</label>
-          <select name="ChoferID" value={formulario.ChoferID} onChange={handleChange} required className="w-full border p-2 rounded">
-            <option value="">Seleccionar chofer</option>
-            {choferes.map(c => (
-              <option key={c.choferid} value={c.choferid}>{c.nombre}</option>
-            ))}
-          </select>
+          <Select
+            options={choferes.map(c => ({
+              value: c.choferid,
+              label: c.nombre
+            }))}
+            value={choferes.find(c => c.choferid === parseInt(formulario.ChoferID)) ? {
+              value: formulario.ChoferID,
+              label: choferes.find(c => c.choferid === parseInt(formulario.ChoferID))?.nombre
+            } : null}
+            onChange={(selected) =>
+              setFormulario(prev => ({ ...prev, ChoferID: selected.value }))
+            }
+            placeholder="Seleccionar chofer"
+            className="react-select-container"
+            classNamePrefix="react-select"
+          />
         </div>
+
 
         <div className="md:col-span-2 text-right">
           <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded">Registrar Carga</button>
