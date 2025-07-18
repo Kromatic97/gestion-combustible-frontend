@@ -228,13 +228,20 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
                 <td className="p-2 border">{formatearFechaHoraDDMMYYYY(a.fecha)}</td>
                 <td className="p-2 border">{a.vehiculo}</td>
                 <td className="p-2 border">{a.chofer}</td>
+
                 <td className="p-2 border text-right">
                   {Number(a.cant_litros).toLocaleString('es-PY', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}
                 </td>
-                <td className="p-2 border text-right">{a.kilometrajeactual}</td>
+                
+                <td className="p-2 border text-right">
+                  {Number(a.kilometrajeactual).toLocaleString('es-PY', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                  </td>  
                 <td className="p-2 border">{a.lugar}</td>
               </tr>
             ))}
