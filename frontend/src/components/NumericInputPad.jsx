@@ -5,24 +5,8 @@ const NumericInputPad = ({ value, onChange }) => {
   const inputRef = useRef(null);
   const padRef = useRef(null);
 
-  const handleButtonClick = (val) => {
-    if (val === 'C') {
-      onChange('');
-    } else if (val === '←') {
-      onChange(value.toString().slice(0, -1));
-    } else {
-      onChange((value || '').toString() + val);
-    }
-  };
-
-  const formatNumber = (val) => {
-    const number = parseFloat(val);
-    return isNaN(number)
-      ? ''
-      : number.toLocaleString('es-PY', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        });
+  const handleInputFocus = () => {
+    setShowPad(true);
   };
 
   const handleClickOutside = (event) => {
@@ -41,33 +25,65 @@ const NumericInputPad = ({ value, onChange }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const handleButtonClick = (digit) => {
+    const newValue = (value || '') + digit;
+    onChange(newValue);
+  };
+
+  const handleClear = () => {
+    onChange('');
+  };
+
+  const handleBackspace = () => {
+    onChange((value || '').slice(0, -1));
+  };
+
   return (
-    <div className="relative">
+    <div className="relative inline-block w-full">
       <input
         ref={inputRef}
         type="text"
-        value={formatNumber(value)}
-        onFocus={() => setShowPad(true)}
+        value={value}
+        onFocus={handleInputFocus}
         readOnly
-        className="w-full border p-2 rounded text-right font-mono"
+        className="w-full border p-2 rounded"
       />
+
       {showPad && (
         <div
           ref={padRef}
-          className="absolute z-10 bg-white border rounded shadow-md grid grid-cols-3 gap-1 p-2 mt-1 w-40"
+          className="absolute z-50 bg-white border border-gray-300 rounded shadow p-2 mt-1 grid grid-cols-3 gap-1 w-40"
         >
-          {['7', '8', '9', '4', '5', '6', '1', '2', '3', '0', '.', '←'].map((val) => (
+          {[7, 8, 9, 4, 5, 6, 1, 2, 3].map((num) => (
             <button
-              key={val}
-              onClick={() => handleButtonClick(val)}
-              className="p-2 bg-gray-100 hover:bg-gray-300 rounded text-center text-lg font-medium"
+              key={num}
+              onClick={() => handleButtonClick(num.toString())}
+              className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-1 rounded"
             >
-              {val}
+              {num}
             </button>
           ))}
           <button
-            onClick={() => handleButtonClick('C')}
-            className="col-span-3 p-2 bg-red-100 hover:bg-red-300 rounded text-center font-semibold"
+            onClick={() => handleButtonClick('0')}
+            className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-1 rounded"
+          >
+            0
+          </button>
+          <button
+            onClick={() => handleButtonClick('.')}
+            className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-1 rounded"
+          >
+            .
+          </button>
+          <button
+            onClick={handleBackspace}
+            className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-1 rounded"
+          >
+            ←
+          </button>
+          <button
+            onClick={handleClear}
+            className="col-span-3 bg-red-100 hover:bg-red-200 text-red-800 font-bold py-1 rounded mt-1"
           >
             C
           </button>
@@ -78,6 +94,7 @@ const NumericInputPad = ({ value, onChange }) => {
 };
 
 export default NumericInputPad;
+
 
 
 
