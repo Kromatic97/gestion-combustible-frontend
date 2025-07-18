@@ -68,7 +68,7 @@ const VehiculoForm = () => {
           <label>Marca:</label>
           <select name="marcaid" value={formulario.marcaid} onChange={handleChange} className="w-full border p-2 rounded" required>
             <option value="">Seleccionar marca</option>
-            {marcas.map(m => <option key={m.marcaid} value={m.marcaid}>{m.nombremarca}</option>)}
+            {marcas.map(m => <option key={m.marcaid} value={m.marcaid}>{m.descripcion}</option>)}
           </select>
         </div>
         <div>
@@ -82,7 +82,7 @@ const VehiculoForm = () => {
           <label>Tipo de Vehículo:</label>
           <select name="tipovehiculoid" value={formulario.tipovehiculoid} onChange={handleChange} className="w-full border p-2 rounded" required>
             <option value="">Seleccionar tipo</option>
-            {tipos.map(t => <option key={t.tipovehiculoid} value={t.tipovehiculoid}>{t.nombretipo}</option>)}
+            {tipos.map(t => <option key={t.tipovehiculoid} value={t.tipovehiculoid}>{t.tipovehiculo}</option>)}
           </select>
         </div>
         <div>
