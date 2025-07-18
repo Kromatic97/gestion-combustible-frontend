@@ -73,13 +73,12 @@ const RecargaStockForm = ({ abastecimientoFormRef }) => {
           <div>
             <label className="block">Cantidad de Litros:</label>
             <input
-              type="number"
-              name="CantLitros"
-              value={formulario.CantLitros}
-              onChange={handleChange}
-              required
-              className="w-full border p-2 rounded"
-            />
+            type="number"
+            name="CantLitros"
+            value={formulario.CantLitros}
+            onChange={handleChange}
+            className="w-full border border-gray-300 p-2 rounded h-[40px]"
+          />
           </div>
 
           
