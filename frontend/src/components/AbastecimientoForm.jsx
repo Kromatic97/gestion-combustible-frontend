@@ -4,7 +4,8 @@ import API_BASE_URL from '../config';
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { es } from 'date-fns/locale';
-import NumericInputPad from './NumericInputPad'; // Asegúrate de tener este componente
+import NumericInputPad from './NumericInputPad';
+import Select from 'react-select';
 
 registerLocale("es", es);
 
@@ -70,12 +71,12 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
     setAbastecimientos(res.data);
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormulario(prev => ({ ...prev, [name]: value }));
+  const handleSelectChange = (selectedOption, actionMeta) => {
+    const { name } = actionMeta;
+    setFormulario(prev => ({ ...prev, [name]: selectedOption ? selectedOption.value : '' }));
 
-    if (name === 'VehiculoID') {
-      const vehiculo = vehiculos.find(v => v.vehiculoid === parseInt(value));
+    if (name === 'VehiculoID' && selectedOption) {
+      const vehiculo = vehiculos.find(v => v.vehiculoid === selectedOption.value);
       if (vehiculo) {
         setFormulario(prev => ({ ...prev, KilometrajeActual: vehiculo.kilometrajeodometro }));
       }
@@ -141,31 +142,20 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
           />
         </div>
 
-       <div>
+        <div>
           <label>Vehículo:</label>
           <Select
-            options={vehiculos.map(v => ({
-              value: v.vehiculoid,
-              label: v.denominacion
-            }))}
-            value={vehiculos.find(v => v.vehiculoid === parseInt(formulario.VehiculoID)) ? {
+            name="VehiculoID"
+            value={vehiculos.find(v => v.vehiculoid === formulario.VehiculoID) ? {
               value: formulario.VehiculoID,
-              label: vehiculos.find(v => v.vehiculoid === parseInt(formulario.VehiculoID))?.denominacion
+              label: vehiculos.find(v => v.vehiculoid === formulario.VehiculoID).denominacion
             } : null}
-            onChange={(selected) => {
-              const vehiculoSeleccionado = vehiculos.find(v => v.vehiculoid === selected.value);
-              setFormulario(prev => ({
-                ...prev,
-                VehiculoID: selected.value,
-                KilometrajeActual: vehiculoSeleccionado?.kilometrajeodometro || ''
-              }));
-            }}
+            onChange={handleSelectChange}
+            options={vehiculos.map(v => ({ value: v.vehiculoid, label: v.denominacion }))}
             placeholder="Seleccionar vehículo"
-            className="react-select-container"
-            classNamePrefix="react-select"
+            isClearable
           />
         </div>
-
 
         <div>
           <label>Kilometraje Actual:</label>
@@ -186,44 +176,32 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
         <div>
           <label>Lugar:</label>
           <Select
-            options={lugares.map(l => ({
-              value: l.lugarid,
-              label: l.nombrelugar
-            }))}
-            value={lugares.find(l => l.lugarid === parseInt(formulario.LugarID)) ? {
+            name="LugarID"
+            value={lugares.find(l => l.lugarid === formulario.LugarID) ? {
               value: formulario.LugarID,
-              label: lugares.find(l => l.lugarid === parseInt(formulario.LugarID))?.nombrelugar
+              label: lugares.find(l => l.lugarid === formulario.LugarID).nombrelugar
             } : null}
-            onChange={(selected) =>
-              setFormulario(prev => ({ ...prev, LugarID: selected.value }))
-            }
+            onChange={handleSelectChange}
+            options={lugares.map(l => ({ value: l.lugarid, label: l.nombrelugar }))}
             placeholder="Seleccionar lugar"
-            className="react-select-container"
-            classNamePrefix="react-select"
+            isClearable
           />
         </div>
-
 
         <div>
           <label>Chofer:</label>
           <Select
-            options={choferes.map(c => ({
-              value: c.choferid,
-              label: c.nombre
-            }))}
-            value={choferes.find(c => c.choferid === parseInt(formulario.ChoferID)) ? {
+            name="ChoferID"
+            value={choferes.find(c => c.choferid === formulario.ChoferID) ? {
               value: formulario.ChoferID,
-              label: choferes.find(c => c.choferid === parseInt(formulario.ChoferID))?.nombre
+              label: choferes.find(c => c.choferid === formulario.ChoferID).nombre
             } : null}
-            onChange={(selected) =>
-              setFormulario(prev => ({ ...prev, ChoferID: selected.value }))
-            }
+            onChange={handleSelectChange}
+            options={choferes.map(c => ({ value: c.choferid, label: c.nombre }))}
             placeholder="Seleccionar chofer"
-            className="react-select-container"
-            classNamePrefix="react-select"
+            isClearable
           />
         </div>
-
 
         <div className="md:col-span-2 text-right">
           <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded">Registrar Carga</button>
@@ -238,7 +216,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
       <div className="mt-6 p-4 bg-blue-500 rounded text-white">
         <p className="text-lg font-semibold">Stock Actual</p>
-        <p className="text-2xl font-mono">{stock.toLocaleString('es-PY', { minimumFractionDigits: 2, maximumFractionDigits:2 })} litros</p>
+        <p className="text-2xl font-mono">{stock.toLocaleString('es-PY', { minimumFractionDigits: 2 })} litros</p>
       </div>
 
       <div className="mt-8">
@@ -260,8 +238,8 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
                 <td className="p-2 border">{formatearFechaHora(a.fecha)}</td>
                 <td className="p-2 border">{a.vehiculo}</td>
                 <td className="p-2 border">{a.chofer}</td>
-                <td className="p-2 border text-right">{parseFloat(a.cant_litros).toLocaleString('es-PY', { minimumFractionDigits: 2, maximumFractionDigits:2 })}</td>
-                <td className="p-2 border text-right">{parseFloat(a.kilometrajeactual).toLocaleString('es-PY', { minimumFractionDigits: 2, maximumFractionDigits:2 })}</td>
+                <td className="p-2 border text-right">{parseFloat(a.cant_litros).toLocaleString('es-PY', { minimumFractionDigits: 2 })}</td>
+                <td className="p-2 border text-right">{parseFloat(a.kilometrajeactual).toLocaleString('es-PY', { minimumFractionDigits: 2 })}</td>
                 <td className="p-2 border">{a.lugar}</td>
               </tr>
             ))}
@@ -273,6 +251,7 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 });
 
 export default AbastecimientoForm;
+
 
 
 
