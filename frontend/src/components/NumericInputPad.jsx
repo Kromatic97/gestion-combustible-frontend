@@ -1,67 +1,83 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 
-const NumericInputPad = ({ label, value, onChange }) => {
-  const [showPad, setShowPad] = useState(false);
+const NumericInputPad = ({ value, onChange, placeholder = '' }) => {
   const inputRef = useRef(null);
   const padRef = useRef(null);
 
-  const handleKeyPress = (key) => {
-    if (key === '←') {
-      onChange(value.slice(0, -1));
-    } else if (key === 'C') {
+  const handleInputClick = (val) => {
+    if (val === 'C') {
       onChange('');
+    } else if (val === '←') {
+      onChange(value.slice(0, -1));
     } else {
-      onChange(value + key);
+      onChange(value + val);
     }
   };
 
-  const keys = ['7', '8', '9', '4', '5', '6', '1', '2', '3', '0', '.', '←', 'C'];
+  const handleClickOutside = (e) => {
+    if (
+      padRef.current &&
+      !padRef.current.contains(e.target) &&
+      !inputRef.current.contains(e.target)
+    ) {
+      padRef.current.style.display = 'none';
+    }
+  };
 
-  // Cerrar el pad al hacer clic fuera
+  const togglePad = () => {
+    if (padRef.current.style.display === 'none' || !padRef.current.style.display) {
+      padRef.current.style.display = 'block';
+    } else {
+      padRef.current.style.display = 'none';
+    }
+  };
+
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        padRef.current &&
-        !padRef.current.contains(event.target) &&
-        !inputRef.current.contains(event.target)
-      ) {
-        setShowPad(false);
-      }
-    };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const buttons = ['7', '8', '9', '4', '5', '6', '1', '2', '3', '0', '.', '←', 'C'];
+
   return (
-    <div className="relative w-full">
-      <label className="block mb-1 text-sm font-medium text-gray-700">{label}</label>
+    <div className="relative inline-block">
       <input
         ref={inputRef}
         type="text"
+        className="w-full border p-2 rounded"
+        placeholder={placeholder}
         value={value}
-        onFocus={() => setShowPad(true)}
+        onClick={(e) => {
+          e.stopPropagation();
+          togglePad();
+        }}
         readOnly
-        className="w-full border p-2 rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300"
       />
-      {showPad && (
-        <div
-          ref={padRef}
-          className="absolute z-50 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg grid grid-cols-3 gap-2 p-3 w-40"
-        >
-          {keys.map((key) => (
-            <button
-              key={key}
-              onClick={() => handleKeyPress(key)}
-              className="bg-gray-400 text-white py-2 rounded hover:bg-gray-600 text-sm font-semibold"
-            >
-              {key}
-            </button>
-          ))}
-        </div>
-      )}
+
+      <div
+        ref={padRef}
+        className="absolute left-0 z-50 bg-white border rounded shadow-md p-2 grid grid-cols-3 gap-2 mt-1"
+        style={{ display: 'none' }}
+      >
+        {buttons.map((btn) => (
+          <button
+            key={btn}
+            className="bg-gray-100 hover:bg-blue-200 text-lg p-2 rounded focus:outline-none"
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation(); // 👈 evita conflicto con selects
+              handleInputClick(btn);
+            }}
+          >
+            {btn}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
 
 export default NumericInputPad;
+
 
