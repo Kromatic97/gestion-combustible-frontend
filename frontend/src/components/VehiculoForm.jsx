@@ -64,7 +64,7 @@ const VehiculoForm = () => {
       });
 
       setTimeout(() => {
-        navigate('/abastecimientos');
+        navigate('/');
       }, 3000);
 
     } catch (error) {
