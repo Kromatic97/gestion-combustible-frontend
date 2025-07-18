@@ -154,16 +154,27 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
           <label>Kilometraje Actual:</label>
           <NumericInputPad
             value={formulario.KilometrajeActual}
-            onChange={(value) => setFormulario(prev => ({ ...prev, KilometrajeActual: value }))}
+            onChange={(value) =>
+              setFormulario(prev => ({
+                ...prev,
+                KilometrajeActual: value === '' ? '' : parseFloat(value)
+              }))
+            }
             placeholder="Ingrese kilometraje"
           />
+
         </div>
 
         <div>
           <label>Cantidad de Litros:</label>
           <NumericInputPad
             value={formulario.CantLitros}
-            onChange={(value) => setFormulario(prev => ({ ...prev, CantLitros: value }))}
+            onChange={(value) =>
+              setFormulario(prev => ({
+                ...prev,
+                CantLitros: value === '' ? '' : parseFloat(value)
+              }))
+            }
             placeholder="Ingrese litros"
           />
         </div>
