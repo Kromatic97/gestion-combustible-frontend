@@ -2,40 +2,42 @@ import React, { useState, useRef, useEffect } from 'react';
 
 const NumericInputPad = ({ value, onChange }) => {
   const [showPad, setShowPad] = useState(false);
+  const [internalValue, setInternalValue] = useState(value?.toString() || '');
   const inputRef = useRef(null);
   const padRef = useRef(null);
 
-  const handleInputFocus = () => {
+  // Mostrar pad al enfocar
+  const handleFocus = () => {
     setShowPad(true);
   };
 
-  const handleClickOutside = (event) => {
-    if (
-      inputRef.current &&
-      !inputRef.current.contains(event.target) &&
-      padRef.current &&
-      !padRef.current.contains(event.target)
-    ) {
-      setShowPad(false);
-    }
-  };
-
+  // Ocultar pad solo si clic fuera de input y del pad
   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        padRef.current &&
+        !padRef.current.contains(event.target) &&
+        inputRef.current &&
+        !inputRef.current.contains(event.target)
+      ) {
+        setShowPad(false);
+      }
+    };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleButtonClick = (digit) => {
-    const newValue = (value || '') + digit;
-    onChange(newValue);
+  // Actualiza valor externo cada vez que cambia interno
+  useEffect(() => {
+    onChange(internalValue);
+  }, [internalValue]);
+
+  const handleButtonClick = (val) => {
+    setInternalValue((prev) => prev + val);
   };
 
   const handleClear = () => {
-    onChange('');
-  };
-
-  const handleBackspace = () => {
-    onChange((value || '').slice(0, -1));
+    setInternalValue('');
   };
 
   return (
@@ -43,47 +45,30 @@ const NumericInputPad = ({ value, onChange }) => {
       <input
         ref={inputRef}
         type="text"
-        value={value}
-        onFocus={handleInputFocus}
+        value={internalValue}
+        onFocus={handleFocus}
         readOnly
-        className="w-full border p-2 rounded"
+        className="w-full border p-2 rounded text-right"
       />
 
       {showPad && (
         <div
           ref={padRef}
-          className="absolute z-50 bg-white border border-gray-300 rounded shadow p-2 mt-1 grid grid-cols-3 gap-1 w-40"
+          onMouseDown={(e) => e.preventDefault()} // evita blur inmediato
+          className="absolute z-50 bg-white border rounded shadow-md p-2 mt-1 grid grid-cols-3 gap-2"
         >
-          {[7, 8, 9, 4, 5, 6, 1, 2, 3].map((num) => (
+          {[...'7894561230.'].map((num, i) => (
             <button
-              key={num}
-              onClick={() => handleButtonClick(num.toString())}
-              className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-1 rounded"
+              key={i}
+              onClick={() => handleButtonClick(num)}
+              className="bg-gray-100 hover:bg-gray-300 text-lg rounded p-2"
             >
               {num}
             </button>
           ))}
           <button
-            onClick={() => handleButtonClick('0')}
-            className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-1 rounded"
-          >
-            0
-          </button>
-          <button
-            onClick={() => handleButtonClick('.')}
-            className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-1 rounded"
-          >
-            .
-          </button>
-          <button
-            onClick={handleBackspace}
-            className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-1 rounded"
-          >
-            ←
-          </button>
-          <button
             onClick={handleClear}
-            className="col-span-3 bg-red-100 hover:bg-red-200 text-red-800 font-bold py-1 rounded mt-1"
+            className="col-span-3 bg-red-200 hover:bg-red-300 text-lg rounded p-2"
           >
             C
           </button>
@@ -94,6 +79,7 @@ const NumericInputPad = ({ value, onChange }) => {
 };
 
 export default NumericInputPad;
+
 
 
 
