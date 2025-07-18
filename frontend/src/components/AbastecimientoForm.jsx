@@ -1,12 +1,26 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import axios from 'axios';
+import Select from 'react-select';
 import API_BASE_URL from '../config';
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { es } from 'date-fns/locale';
 
 registerLocale("es", es);
-
+const customStyles = {
+  control: (base) => ({
+    ...base,
+    padding: '0.25rem',
+    borderRadius: '0.375rem',
+    borderColor: '#d1d5db',
+    boxShadow: 'none',
+    '&:hover': { borderColor: '#9ca3af' },
+  }),
+  menu: (base) => ({
+    ...base,
+    zIndex: 50,
+  }),
+};
 const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
   const [formulario, setFormulario] = useState({
     Fecha: '',
@@ -159,12 +173,25 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
         <div>
           <label>Vehículo:</label>
-          <select name="VehiculoID" value={formulario.VehiculoID} onChange={handleChange} required className="w-full border p-2 rounded">
-            <option value="">Seleccionar vehículo</option>
-            {vehiculos.map(v => (
-              <option key={v.vehiculoid} value={v.vehiculoid}>{v.denominacion}</option>
-            ))}
-          </select>
+          <Select
+            options={vehiculos.map(v => ({
+              value: v.vehiculoid,
+              label: v.denominacion
+            }))}
+            value={vehiculos.find(v => v.vehiculoid === parseInt(formulario.VehiculoID)) ?
+                  { value: formulario.VehiculoID, label: vehiculos.find(v => v.vehiculoid === parseInt(formulario.VehiculoID))?.denominacion } : null}
+            onChange={(selected) => {
+              const vehiculo = vehiculos.find(v => v.vehiculoid === selected?.value);
+              setFormulario(prev => ({
+                ...prev,
+                VehiculoID: selected?.value || '',
+                KilometrajeActual: vehiculo?.kilometrajeodometro || ''
+              }));
+            }}
+            styles={customStyles}
+            placeholder="Seleccionar vehículo"
+            isClearable
+          />
         </div>
 
         <div>
@@ -179,23 +206,45 @@ const AbastecimientoForm = forwardRef(({ onAbastecimientoRegistrado }, ref) => {
 
         <div>
           <label>Lugar:</label>
-          <select name="LugarID" value={formulario.LugarID} onChange={handleChange} required className="w-full border p-2 rounded">
-            <option value="">Seleccionar lugar</option>
-            {lugares.map(l => (
-              <option key={l.lugarid} value={l.lugarid}>{l.nombrelugar}</option>
-            ))}
-          </select>
+          <Select
+            options={lugares.map(l => ({
+              value: l.lugarid,
+              label: l.nombrelugar
+            }))}
+            value={lugares.find(l => l.lugarid === parseInt(formulario.LugarID)) ?
+                  { value: formulario.LugarID, label: lugares.find(l => l.lugarid === parseInt(formulario.LugarID))?.nombrelugar } : null}
+            onChange={(selected) =>
+              setFormulario(prev => ({
+                ...prev,
+                LugarID: selected?.value || ''
+              }))
+            }
+            styles={customStyles}
+            placeholder="Seleccionar lugar"
+            isClearable
+          />
         </div>
 
-        <div>
-          <label>Chofer:</label>
-          <select name="ChoferID" value={formulario.ChoferID} onChange={handleChange} required className="w-full border p-2 rounded">
-            <option value="">Seleccionar chofer</option>
-            {choferes.map(c => (
-              <option key={c.choferid} value={c.choferid}>{c.nombre}</option>
-            ))}
-          </select>
-        </div>
+       <div>
+        <label>Chofer:</label>
+        <Select
+          options={choferes.map(c => ({
+            value: c.choferid,
+            label: c.nombre
+          }))}
+          value={choferes.find(c => c.choferid === parseInt(formulario.ChoferID)) ?
+                { value: formulario.ChoferID, label: choferes.find(c => c.choferid === parseInt(formulario.ChoferID))?.nombre } : null}
+          onChange={(selected) =>
+            setFormulario(prev => ({
+              ...prev,
+              ChoferID: selected?.value || ''
+            }))
+          }
+          styles={customStyles}
+          placeholder="Seleccionar chofer"
+          isClearable
+        />
+      </div>
 
         <div className="md:col-span-2 text-right">
           <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded">Registrar Carga</button>
